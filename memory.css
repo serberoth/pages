@@ -61,3 +61,6 @@ div.card.flipped {
   transform: rotatey(-180deg);
 }
 
+div.footer {
+  text-align: center;
+}
