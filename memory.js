@@ -39,6 +39,7 @@ function onClickBuilder(index) {
             flipped = [];
             --matches;
             $('#matches').html(18 - matches);
+            console.log('matches: ' + $('#matches').html());
             if (matches <= 0) {
               victory();
             }
@@ -51,6 +52,7 @@ function onClickBuilder(index) {
               flipped = [];
               ++attempts;
               $('#attempts').html(attempts);
+              console.log('attempts: ' + $('#attempts').html());
             }, 500);
           }
         }
