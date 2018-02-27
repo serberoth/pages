@@ -17,6 +17,7 @@ function callback() {
 }
 
 function victory() {
+  $('#victory').effect('slide', { 'direction': 'down', 'distance': '200' }, 500, callback);
 }
 
 function onClickBuilder(index) {

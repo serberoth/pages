@@ -61,6 +61,14 @@ div.card.flipped {
   transform: rotatey(-180deg);
 }
 
+div#victory {
+  visibility: hidden;
+  font-size: xx-large;
+  font-weight: bold;
+  text-transform: uppercase;
+  z-index: 5;
+}
+
 div.footer {
   text-align: center;
 }
