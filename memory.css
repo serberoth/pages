@@ -67,8 +67,10 @@ div#victory {
   display: none;
   font-size: xx-large;
   font-weight: bold;
+  color: gold;
   text-transform: uppercase;
   text-align: center;
+  text-shadow: 2px 2px black;
   vertical-align: middle;
   position: absolute;
   top: 0;
