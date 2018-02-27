@@ -10,8 +10,13 @@ function shuffle(array) {
 var cards = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
   0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ];
 var flipped = [];
+var matches = 18;
+var attempts = 0;
 
 function callback() {
+}
+
+function victory() {
 }
 
 function onClickBuilder(index) {
@@ -32,6 +37,11 @@ function onClickBuilder(index) {
             a.effect('explode', {}, 500, callback);
             b.effect('explode', {}, 500, callback);
             flipped = [];
+            --matches;
+            $('#matches').html(18 - matches);
+            if (matches <= 0) {
+              victory();
+            }
           } else {
             a.effect('shake', {}, 500, callback);
             b.effect('shake', {}, 500, callback);
@@ -39,6 +49,8 @@ function onClickBuilder(index) {
               a.removeClass('flipped');
               b.removeClass('flipped');
               flipped = [];
+              ++attempts;
+              $('#attempts').html(attempts);
             }, 500);
           }
         }
