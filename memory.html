@@ -5,6 +5,8 @@
 <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />-->
 <title>Memory</title>
 
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" />
 
 <!--
@@ -18,15 +20,28 @@
 <body>
 <div class="container" >
   <div class="row" >
-    <div class="col-sm-8" ><span>Attempts:</span><span id="attempts"></span></div>
-    <div class="col-sm-8" ><span>Matches:</span><span id="matches"></span></div>
+    <div class="col-sm" ><span>Attempts:</span><span id="attempts" name="attempts" ></span></div>
+    <div class="col-sm" ><span>Matches:</span><span id="matches" name="matches" ></span></div>
   </div>
-  <div id="victory" >YOU WIN!</div>
+  <div id="victory" name="victory" class="container" >
+    <div id="victory-text" name="victory-text" >YOU WIN!</div>
+    <button id="replay" name="replay" type="button" class="btn btn-secondary" >Play Again</button>
+  </div>
+  <div class="row" id="players" name="players" >
+  </div>
+  <hr />
   <div class="container" id="playarea" name="playarea" >
   </div>
+  <hr />
+  <div class="row" id="previews" name="previews" >
+  </div>
+  <hr />
   <div class="footer" >
-  DarkMatter Software &copy; 2018<br>
-  Card Art:
+  DarkMatter Software &copy; 2018-2019<br>
+  V2 Card Art:
+  <a href="https://openclipart.org/user-detail/oksmith" >Public Domain by oksmith</a>
+  <br />
+  V1 Card Art:
   <a href="http://dycha.net" >http://dycha.net</a>
   <a href="https://creativecommons.org/licenses/by/3.0/" >CC-BY 3.0</a>
   </div>
