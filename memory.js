@@ -103,7 +103,7 @@ function onClickBuilder(index) {
           }
         }
         flipping = null;
-      }, 750); // 1000);
+      }, 1000);
     }
   };
 }
