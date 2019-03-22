@@ -1,37 +1,16 @@
+body {
+  background-color: #fffafa;
+}
 
 div.holder {
   display: inline-block;
-  width: 132px;
-  height: 132px;
+  /* width: 132px;
+  height: 132px; */
   position: relative;
   -webkit-perspective: 800px;
   -moz-perspective: 800px;
   -o-perspective: 800px;
   perspective: 800px;
-}
-@media(min-width: 576px) {
-  div.holder {
-    width: 66px;
-    height: 66px;
-  }
-}
-@media(min-width: 768px) {
-  div.holder {
-    width: 99px;
-    height: 99px;
-  }
-}
-@media(min-width: 992px) {
-  div.holder {
-    width: 132px;
-    height: 132px;
-  }
-}
-@media(min-width: 1200px) {
-  div.holder {
-    width: 132px;
-    height: 132px;
-  }
 }
 
 div.card {
@@ -128,3 +107,99 @@ div.footer {
 .btn-players {
   margin: 0 2px;
 }
+
+#players-label {
+  vertical-align: middle;
+}
+
+@media(min-width: 320px) {
+  div.holder {
+    width: 44px;
+    height: 44px;
+    margin: 2px;
+  }
+  div.card .face img {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+  }
+  div.card .back img {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+  }
+  span.preview {
+    padding: 0 1px;
+  }
+  span.preview img {
+    width: 32px;
+    height: 32px;
+  }
+  .btn-players {
+    font-size: 8pt;
+  }
+  #players-label {
+    display: none;
+  }
+}
+@media(min-width: 576px) {
+  div.holder {
+    width: 64px;
+    height: 64px;
+    margin: 2px;
+  }
+  div.card .face img {
+    width: 64px;
+    height: 64px;
+  }
+  div.card .back img {
+    width: 64px;
+    height: 64px;
+  }
+  #players-label {
+    display: unset;
+  }
+}
+@media(min-width: 768px) {
+  div.holder {
+    width: 99px;
+    height: 99px;
+  }
+  div.card .face img {
+    width: 99px;
+    height: 99px;
+  }
+  div.card .back img {
+    width: 99px;
+    height: 99px;
+  }  
+}
+@media(min-width: 992px) {
+  div.holder {
+    width: 124px;
+    height: 124px;
+  }
+  div.card .face img {
+    width: 124px;
+    height: 124px;
+  }
+  div.card .back img {
+    width: 124px;
+    height: 124px;
+  }
+}
+@media(min-width: 1200px) {
+  div.holder {
+    width: 132px;
+    height: 132px;
+  }
+  div.card .face img {
+    width: 132px;
+    height: 132px;
+  }
+  div.card .back img {
+    width: 132px;
+    height: 132px;
+  }  
+}
+

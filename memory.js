@@ -162,6 +162,12 @@ function add_controls(backgrounds) {
   previews.empty();
   var wrapper = document.createElement('div');
   $(wrapper).appendTo(previews).addClass('col-sm');
+  /*
+  var label = document.createElement('span');
+  $(label).appendTo(wrapper).
+    attr('id', 'players-label').
+    html('Card Back: ');
+   */
   for (var i = 0; i < backgrounds.length; ++i) {
     var preview = document.createElement('span');
     if (i == bkgSelection) {
@@ -184,7 +190,9 @@ function add_controls(backgrounds) {
   wrapper = document.createElement('div');
   $(wrapper).appendTo(previews).addClass('col-sm');
   var label = document.createElement('span');
-  $(label).appendTo(wrapper).html('Num Players: ');
+  $(label).appendTo(wrapper).
+    attr('id', 'players-label').
+    html('Num Players: ');
   for (var i = 0; i < maxPlayers; ++i) {
     var button = document.createElement('button');
     $(button).appendTo(wrapper).

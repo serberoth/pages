@@ -1,5 +1,15 @@
+html {
+  font-family: 'Noto Sans', sans-serif;
+	line-height: 1.15;
+	-webkit-text-size-adjust: 100%;
+}
 body {
-  font-family: 'Noto Sans', sans-serif;  
+  font-family: 'Noto Sans', sans-serif;
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.5;
+	color: #212529;
+	text-align: left;
 }
 
 hr {
@@ -18,18 +28,19 @@ hr {
 	margin-right: auto;
 	margin-left: auto;
 }
+@media(min-width: 320px) {
+  .container {
+    max-width: 380px;
+  }
+}
 @media(min-width: 576px) {
   .container {
     max-width: 540px;
-    padding-right: 0;
-    padding-left: 0;
   }
 }
 @media(min-width: 768px) {
   .container {
     max-width: 720px;
-    padding-right: 0;
-    padding-left: 0;
   }
 }
 @media(min-width: 992px) {
@@ -70,7 +81,7 @@ hr {
 	-webkit-box-flex: 1;
 	-ms-flex-positive: 1;
 	flex-grow: 1;
-	max-width: 100%;
+  max-width: 100%;
 }
 
 .btn {
