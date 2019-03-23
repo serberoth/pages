@@ -103,7 +103,7 @@ function onClickBuilder(index) {
           }
         }
         flipping = null;
-      }, 1000);
+      }, 750); // 1000);
     }
   };
 }
@@ -218,7 +218,10 @@ function new_game() {
     'v2/faces/eggplant',    'v2/faces/ice-cream', 'v2/faces/lemons',  'v2/faces/onion',   'v2/faces/peaches',
     'v2/faces/tomato',      'v2/faces/avocado',   'v2/faces/cabbage', 'v2/faces/carrot',  'v2/faces/cookie',
     'v2/faces/croissant',   'v2/faces/grapes',    'v2/faces/kiwi',    'v2/faces/olives',  'v2/faces/parfait',
-    'v2/faces/strawberry',  'v2/faces/watermelon',  'v2/faces/garlic',  'v2/faces/peppers', 'v2/faces/crepe'
+    'v2/faces/strawberry',  'v2/faces/watermelon',  'v2/faces/garlic',  'v2/faces/peppers', 'v2/faces/crepe',
+    'v2/faces/burger',      'v2/faces/cola',      'v2/faces/egg',     'v2/faces/fries',   'v2/faces/hot-dog',
+    'v2/faces/maki',        'v2/faces/pizza',     'v2/faces/sushi',   'v2/faces/taco',    'v2/faces/tempura',
+    'v2/faces/cheesecake'
   ];
   var backgrounds2 = [
     'cards/v2/bkgs/wave.png', 'cards/v2/bkgs/fuji.png', 'cards/v2/bkgs/undersea.png', 'cards/v2/bkgs/warning.png'
