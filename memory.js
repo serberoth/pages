@@ -110,39 +110,53 @@ function onClickBuilder(index) {
 
 function onClickPreviewBuilder(index, src) {
   return function(event) {
-    $('.selected').removeClass('selected');
+    $('.preview.selected').removeClass('selected');
     $('#preview-' + index).addClass('selected');
   
     bkgSelection = index;
   
-    for (var i = 0; i < 6; ++i) {
-      for (var j = 0; j < 7; ++j) {
-        $('#card-face-img-' + i + '-' + j).attr('src', src);
+    for (var j = 0; j < height; ++j) {
+      for (var i = 0; i < width; ++i) {
+        $('#card-face-img-' + j + '-' + i).attr('src', src);
       }
     }
   }
 }
 
+function confirmNewGame() {
+  if (attempts > 0 || flipped.length > 0) {
+    return confirm("Are you sure?  This will begine a new game.");
+  }
+  return true;
+}
+
 function onClickBoardSizeBuilder(index, x, y) {
   return function(event) {
-    whoseTurn = 0;
-    width = x;
-    height = y;
-    new_game();
+    if (confirmNewGame()) {
+      $('.sizes.selected').removeClass('selected');
+      $('#board-size-' + index).addClass('selected');
+
+      whoseTurn = 0;
+      width = x;
+      height = y;
+      new_game();
+    }
   }
 }
 
 function onClickChangePlayersBuilder(numPlayers) {
   return function(event) {
-    whoseTurn = 0;
-    switch (numPlayers) {
-      case 1: players = [ 0 ]; break;
-      default:
-      case 2: players = [ 0, 0 ]; break;
-      case 3: players = [ 0, 0, 0 ]; break;
-      case 4: players = [ 0, 0, 0, 0 ]; break;
+    if (confirmNewGame()) {
+      whoseTurn = 0;
+      switch (numPlayers) {
+        case 1: players = [ 0 ]; break;
+        default:
+        case 2: players = [ 0, 0 ]; break;
+        case 3: players = [ 0, 0, 0 ]; break;
+        case 4: players = [ 0, 0, 0, 0 ]; break;
+      }
+      new_game();
     }
-    new_game();
   }
 }
 
@@ -279,6 +293,13 @@ function new_game() {
     { 'x': 7, 'y': 6, 'img': 'cards/v2/icons/4x3.svg' },
     { 'x': 7, 'y': 8, 'img': 'cards/v2/icons/4x4.svg' },
   ];
+
+  // Build an array of cards with doubled indicies: [0, 1, 2, 3..., 0, 1, 2, 3...]
+  cards = function(length) {
+    a = Array(length).fill().map((_, index) => index);
+    return a.concat(a);
+  }((width * height) >> 1);
+
   shuffle(cards);
   // Shuffle the images since we have more images than cards on the field
   shuffle(images2);
