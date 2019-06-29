@@ -1,0 +1,19 @@
+<svg viewBox="-1 -1 48 48" xmlns="http://www.w3.org/2000/svg" fill="grey" >
+  <rect x=" 0" y=" 0" width="10" height="14" rx="3" />
+  <rect x="12" y=" 0" width="10" height="14" rx="3" />
+  <rect x="24" y=" 0" width="10" height="14" rx="3" />
+  <rect x="36" y=" 0" width="10" height="14" rx="3" />
+
+  <rect x=" 0" y="16" width="10" height="14" rx="3" />
+  <rect x="12" y="16" width="10" height="14" rx="3" />
+  <rect x="24" y="16" width="10" height="14" rx="3" />
+  <rect x="36" y="16" width="10" height="14" rx="3" />
+
+  <rect x=" 0" y="32" width="10" height="14" rx="3" />
+  <rect x="12" y="32" width="10" height="14" rx="3" />
+  <rect x="24" y="32" width="10" height="14" rx="3" />
+  <rect x="36" y="32" width="10" height="14" rx="3" />
+
+  <style>.text { font: 24px sans-serif; fill: black; }</style>
+  <text x="4" y="32" class="text" >7x6</text>
+</svg>

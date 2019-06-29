@@ -123,6 +123,15 @@ function onClickPreviewBuilder(index, src) {
   }
 }
 
+function onClickBoardSizeBuilder(index, x, y) {
+  return function(event) {
+    whoseTurn = 0;
+    width = x;
+    height = y;
+    new_game();
+  }
+}
+
 function onClickChangePlayersBuilder(numPlayers) {
   return function(event) {
     whoseTurn = 0;
@@ -157,9 +166,10 @@ function add_players() {
   }
 }
 
-function add_controls(backgrounds) {
+function add_previews(backgrounds) {
   var previews = $('#previews');
   previews.empty();
+
   var wrapper = document.createElement('div');
   $(wrapper).appendTo(previews).addClass('col-sm');
   /*
@@ -203,6 +213,38 @@ function add_controls(backgrounds) {
   }
 }
 
+function add_board_sizes(board_sizes) {
+  var outer = $('#board-sizes');
+  outer.empty();
+
+  var wrapper = document.createElement('div');
+  $(wrapper).appendTo(outer).addClass('col-sm');
+  for (var i = 0; i < board_sizes.length; ++i) {
+    var size = document.createElement('span');
+    if (board_sizes[i].x == width && board_sizes[i].y == height) {
+      $(size).addClass('sizes selected');
+    } else {
+      $(size).addClass('sizes');
+    }
+    $(size).appendTo(wrapper).
+      attr('id', 'board-size-' + i).
+      attr('index', i).
+      // FIXME: Fix this so it overlays right now the text is in the SVG
+      // html('' + board_sizes[i].x + ' x ' + board_sizes[i].y).
+      data('img', board_sizes[i].img).
+      click(onClickBoardSizeBuilder(i, board_sizes[i].x, board_sizes[i].y));
+    var sizeImage = document.createElement('img');
+    $(sizeImage).appendTo(size).
+      attr('id', 'board-size-img-' + i).
+      attr('src', board_sizes[i].img);
+  }
+}
+
+function add_controls(backgrounds, board_sizes) {
+  add_previews(backgrounds);
+  add_board_sizes(board_sizes);
+}
+
 function new_game() {
   /*
   var images = [
@@ -226,6 +268,17 @@ function new_game() {
   var backgrounds2 = [
     'cards/v2/bkgs/wave.png', 'cards/v2/bkgs/fuji.png', 'cards/v2/bkgs/undersea.png', 'cards/v2/bkgs/warning.png'
   ];
+  // board size - tiles - button display
+  // 5x6 - 15 tiles (2x3)
+  // 6x6 - 18 tiles (3x3)
+  // 6x7 - 21 tiles (3x4)
+  // 8x7 - 28 tiles (4x4)
+  var board_sizes = [
+    { 'x': 6, 'y': 5, 'img': 'cards/v2/icons/3x2.svg' },
+    { 'x': 6, 'y': 6, 'img': 'cards/v2/icons/3x3.svg' },
+    { 'x': 7, 'y': 6, 'img': 'cards/v2/icons/4x3.svg' },
+    { 'x': 7, 'y': 8, 'img': 'cards/v2/icons/4x4.svg' },
+  ];
   shuffle(cards);
   // Shuffle the images since we have more images than cards on the field
   shuffle(images2);
@@ -246,7 +299,7 @@ function new_game() {
 
   add_players();
 
-  add_controls(backgrounds2);
+  add_controls(backgrounds2, board_sizes);
 
   var parent = $('#playarea');
   parent.empty();
