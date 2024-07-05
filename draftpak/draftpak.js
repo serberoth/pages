@@ -1,5 +1,5 @@
 import * as cards from "./draftpak_cards.js";
-import { DraftGame } from "./draftpak_table.js";
+import { DraftGame, DraftDeck } from "./draftpak_table.js";
 import { Xoshiro128 } from "./rando.js";
 
 let game = null;
@@ -18,8 +18,8 @@ const CARD_FACES = new Map([
     [cards.CARD_PAIR_SCORING,       new CardDescriptor('5/2', ''), ],
     [cards.CARD_TRIPLE_SCORING,     new CardDescriptor('A/3', ''), ],
     [cards.CARD_ESCALATING_PTS,     new CardDescriptor('>>>', ''), ],
-    [cards.CARD_SMALL_TICKS,        new CardDescriptor('__*', ''), ],
-    [cards.CARD_MID_TICKS,          new CardDescriptor('_**', ''), ],
+    [cards.CARD_SMALL_TICKS,        new CardDescriptor('_*_', ''), ],
+    [cards.CARD_MID_TICKS,          new CardDescriptor('*_*', ''), ],
     [cards.CARD_HIGH_TICKS,         new CardDescriptor('***', ''), ],
 
     [cards.CARD_SMALL_SCORING,      new CardDescriptor(' +1', ''), ],
@@ -64,7 +64,6 @@ function add_card_face(index, kind, parent) {
     parent.appendChild(card);
     const image = document.createElement('img');
     image.setAttribute('class', 'card-face');
-    console.log(`Card: ${cards.card_to_string(kind)} ::: ${kind}`);
     image.setAttribute('src', CARD_FACES.get(kind).image);
     image.setAttribute('alt', CARD_FACES.get(kind).name);
     card.appendChild(image);
@@ -219,12 +218,14 @@ function add_playarea_ui() {
     //       You- (A)
 }
 
-function onClickCardBackBuilder(index, bkg) {
+function onClickChangeCardBackBuilder(index, bkg) {
     return function(event) {
-        const selected = document.querySelector('.preview.selected');
-        selected.classList.remove('selected');
-        const clicked = document.getElementById(`preview-${index}`);
-        clicked.classList.add('selected');
+        const selected = document.querySelector(`.btn-card-back.btn-selected`);
+        if (selected !== null && selected !== undefined) {
+            selected.classList.remove('btn-selected');
+        }
+        const clicked = document.getElementById(`card-back-${index}`);
+        clicked.classList.add('btn-selected');
 
         bkgSelection = index;
 
@@ -237,7 +238,6 @@ function onClickCardBackBuilder(index, bkg) {
                 }
             }
             cardBacks[i].classList.add(`bkg-${bkg.name.toLowerCase()}`);
-            // cardBacks[i].setAttribute('src', src);
         }
     }
 }
@@ -258,39 +258,33 @@ function onClickChangePlayersBuilder(num_players) {
 }
   
 
-function add_controls_card_backs(previews, backgrounds) {
-    const wrapper = document.createElement('div');
-    wrapper.setAttribute('class', 'col-sm');
-    previews.appendChild(wrapper);
+function add_controls_card_backs(control_panel) {
+    const column = document.createElement('div');
+    column.setAttribute('class', 'col-sm');
+    control_panel.appendChild(column);
     const label = document.createElement('span');
-    label.setAttribute('id', 'card-back-label');
+    label.setAttribute('class', 'controls-label');
     label.innerText = 'Card Back: ';
-    wrapper.appendChild(label);
-    for (let i = 0; i < backgrounds.length; ++i) {
-        const preview = document.createElement('span');
+    column.appendChild(label);
+    for (let i = 0; i < CARD_BACKS.length; ++i) {
+        const button = document.createElement('button');
+        button.setAttribute('id', `card-back-${i}`);
+        button.setAttribute('type', 'button');
+        button.setAttribute('class', `btn btn-secondary btn-card-back bkg-${CARD_BACKS[i].name.toLowerCase()}`);
         if (i == bkgSelection) {
-            preview.setAttribute('class', 'preview selected');
-        } else {
-            preview.setAttribute('class', 'preview');
+            button.classList.add('btn-selected');
         }
-        preview.setAttribute('id', `preview-${i}`);
-        preview.dataset.index = i;
-        preview.dataset.image = backgrounds[i].image;
-        preview.onclick = onClickCardBackBuilder(i, backgrounds[i]);
-        wrapper.appendChild(preview);
-
-        const image = document.createElement('div');
-        image.setAttribute('id', `preview-${i}-image`);
-        image.setAttribute('class', `rounded bkg-${backgrounds[i].name.toLowerCase()}`);
-        preview.appendChild(image);
+        button.onclick = onClickChangeCardBackBuilder(i, CARD_BACKS[i]);
+        column.appendChild(button);
     }
 }
-function add_controls_num_players(previews) {
+
+function add_controls_num_players(control_panel) {
     const wrapper = document.createElement('div');
-    wrapper.setAttribute('class', 'col-sm');
-    previews.appendChild(wrapper);
+    wrapper.setAttribute('class', 'col-sm col-to-end');
+    control_panel.appendChild(wrapper);
     const label = document.createElement('span');
-    label.setAttribute('id', 'players-label');
+    label.setAttribute('class', 'controls-label');
     label.innerText = 'Num Players: ';
     wrapper.appendChild(label);
     for (let i = 1; i < maxPlayers; ++i) {
@@ -302,12 +296,25 @@ function add_controls_num_players(previews) {
         wrapper.appendChild(button);
     }
 }
-function add_controls(backgrounds) {
-    const previews = document.getElementById('previews');
-    previews.innerHTML = '';
+function add_controls(seed) {
+    const control_panel = document.getElementById('control_panel');
+    control_panel.innerHTML = '';
 
-    add_controls_card_backs(previews, backgrounds);
-    add_controls_num_players(previews);
+    const row0 = document.createElement('div');
+    row0.setAttribute('class', 'row');
+    control_panel.appendChild(row0);
+
+    add_controls_card_backs(row0);
+    add_controls_num_players(row0);
+
+    const row1 = document.createElement('div');
+    row1.setAttribute('class', 'row');
+    control_panel.appendChild(row1);
+
+    const seed_div = document.createElement('div');
+    seed_div.setAttribute('class', 'col-sm');
+    seed_div.innerText = `Seed: ${seed.toString(16)}`;
+    row1.appendChild(seed_div);
 }
 
 // Called at the beginning of the round when the hands are delt and after they are passed
@@ -353,10 +360,13 @@ function ui_selection_callback(player) { /* TODO: */ }
 
 function new_game(num_players = 4) {
     game = new DraftGame(show_round_callback, show_draft_callback, show_passing_callback, show_winner_callback, ui_selection_callback);
-    game.setup(Xoshiro128.generate_seed(), num_players);
+    const seed = Xoshiro128.generate_seed();
+    console.log(`Seed: 0x${seed.toString(16)}`);
+    const deck = DraftDeck.default_deck();
+    game.setup(seed, deck, num_players);
 
     add_playarea_ui();
-    add_controls(CARD_BACKS);
+    add_controls(seed);
 
     game.step();
 }

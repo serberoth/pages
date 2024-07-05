@@ -9,14 +9,18 @@
     border-radius: 5px;
     cursor: pointer;
     padding: 4px;
+    margin: 0;
+    border: black 2px;
 }
 .card .card-back {
     width: 48px;
     height: 64px;
+    border: black 2px;
 }
 .card .card-face {
     width: 48px;
     height: 64px;
+    border: black 2px;
 }
 
 /* On mouse-over, add a deeper shadow */
@@ -55,20 +59,16 @@ div#victory {
     z-index: 5;
 }
 
-span.preview {
-    width: 48px;
-    height: 48px;
-    padding: 0 3px;
+.controls-label {
+    vertical-align: middle;
 }
-span.preview div {
+
+.btn-card-back {
     width: 48px;
     height: 48px;
+    margin: 0 3px;
     border-radius: 4px;
     border: transparent solid 2px;
-}
-span.selected div {
-    border-radius: 4px;
-    border: gold solid 2px;
 }
 
 .btn-players {
@@ -77,20 +77,19 @@ span.selected div {
     margin: 0 2px;
 }
 
-#card-back-label {
-    vertical-align: middle;
+.btn-selected {
+    border-radius: 4px;
+    border: gold solid 2px;
 }
-#players-label {
-    vertical-align: middle;
-}
-    
+
+
 @media screen and (min-width: 320px) and (max-width: 576px) {
-    span.preview {
-        padding: 0 1px;
-        width: 32px;
-        height: 32px;
+    .controls-label {
+        display: none;
     }
-    span.preview img {
+
+    .btn-card-back {
+        padding: 0 1px;
         width: 32px;
         height: 32px;
     }
@@ -101,8 +100,9 @@ span.selected div {
         font-size: 0.6rem;
     }
 
-    #players-label {
-        display: none;
+    .btn-selected {
+        border-radius: 2px;
+        border: gold solid 1px;
     }
 }
 

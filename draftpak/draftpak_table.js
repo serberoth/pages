@@ -142,7 +142,7 @@ export class DraftGame {
         this.ui_selection_callback = ui_selection_callback;
     }
 
-    setup(seed, num_players = 4, num_rounds = 3, alternate_passing = true) {
+    setup(seed, deck, num_players = 4, num_rounds = 3, alternate_passing = true) {
         let random = new Xoshiro128(seed).jump();
         let players = [ ];
         players.push(new Player(null, new HumanAI(this.ui_selection_callback), "You"));
@@ -156,8 +156,6 @@ export class DraftGame {
             let ai = ((i % 2) == 1) ? new PrioritizedChoiceAI() : new RandomChoiceAI();
             players.push(new Player(null, ai, name));
         }
-
-        let deck = DraftDeck.default_deck();
 
         this.table = new DraftTable(seed, players, num_rounds, deck.num_to_deal(num_players), alternate_passing);
         for (let i = 0; i < players.length; ++i) {
