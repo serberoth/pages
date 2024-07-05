@@ -22,7 +22,7 @@ export class Player {
     }
 
     has_selected() {
-        this.ai.has_selected();
+        this.ai.has_selected(this);
     }
 
     draft() {
