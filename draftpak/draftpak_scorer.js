@@ -1,5 +1,6 @@
+import * as cards from "./draftpak_cards.js";
 
-import * as cards from "./draftpak_cards";
+
 
 class DraftScoreValues {
     constructor() {

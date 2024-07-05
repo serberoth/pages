@@ -1,57 +1,68 @@
 
 class SplitMix64 {
     constructor(seed) {
-        this.seed = seed;
+        this.seed = BigInt(seed);
     }
 
     next() {
-        z = (seed += 0x9e3779b97f4a7c15);
-        z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
-        z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
-        return z ^ (z >> 31);
+        let z = (this.seed += 0x9e37_79b9_7f4a_7c15n);
+        z = (z ^ (z >> 30n)) * 0xbf58_476d_1ce4_e5b9n;
+        z = (z ^ (z >> 27n)) * 0x94d0_49bb_1331_11ebn;
+        return z ^ (z >> 31n);
     }
 
 };
 
-export class Xoshiro256 {
+export class Xoshiro128 {
     constructor(seed) {
         const splitmix = new SplitMix64(seed);
-    
-        tmp1 = splitmix.next();
-        tmp2 = splitmix.next();
+        let tmp1 = splitmix.next();
+        let tmp2 = splitmix.next();
 
-        this.s = [ (tmp1 & 0xffff_ffff), ((tmp1 >> 32) & 0xffff_ffff), (tmp2 & 0xffff_ffff), ((tmp2 >> 32) & 0xffff_ffff) ]
+        this.s = [ Number(tmp1 & 0xffff_ffffn), Number((tmp1 >> 32n) & 0xffff_ffffn), Number(tmp2 & 0xffff_ffffn), Number((tmp2 >> 32n) & 0xffff_ffffn) ];
     }
 
-    #rotl(x, k) { return (x << k) | (x >> (64 - k)); }
+    #rotl(x, k) { return (x << k) | (x >>> (32 - k)); }
     
     next() {
-        result = this.#rotl(s[1] * 5, 7) * 9;
-        t = s[1] << 17;
+        let result = this.#rotl(this.s[1] * 5, 7) * 9;
+        let t = this.s[1] << 9;
     
-        s[2] ^= s[0];
-        s[3] ^= s[1];
-        s[1] ^= s[2];
-        s[0] ^= s[3];
-
-        s[2] ^= t;
-
-        s[3] = this.#rotl(s[3], 45);
+        this.s[2] ^= this.s[0];
+        this.s[3] ^= this.s[1];
+        this.s[1] ^= this.s[2];
+        this.s[0] ^= this.s[3];
     
-        return result;
+        this.s[2] ^= t;
+    
+        this.s[3] = this.#rotl(this.s[3], 11);
+    
+        return result >>> 0;
     }
     
     real() {
         value = this.next();
-        return (value >> 11) * 1.1102230246251565e-16; // 0x1.0p-53;
+        return (value >>> 11) * 1.1102230246251565e-16; // 0x1.0p-53;
     }
     
     bool() { return this.real() < 0.5; }
 
-    ranged(max) { return this.ranged(0, max); }
     ranged(min, max) {
-        value = this.next();
-        range = (max - min);
+        // If only a min parameter is supplied use it as the max instead and set the min to zero (0).
+        // We do this/allow this because there is no function overloading in javascript.
+        if (max == undefined) {
+            max = min;
+            min = 0;
+        }
+        // Ensure max > min
+        if (max < min) {
+            let tmp = max;
+            max = min;
+            min = tmp;
+        }
+
+        let value = this.next();
+        let range = max - min;
         return (value % range) + min;
     }
     
@@ -73,7 +84,33 @@ export class Xoshiro256 {
         // return 0xb45eba11_de4dc0de;
 
         // Choose a seed from the date time and some other bits from somewhere to seed the generator
-        return (this.#UNIQUE ^ Date.now()) ^ STARTERS[Date.now() % this.#STARTERS.length];
+        return (this.#UNIQUE ^ Date.now()) ^ this.#STARTERS[Date.now() % this.#STARTERS.length];
     }
     
-};
+    static #JUMP = [ 0x8764_000b, 0xf542_d2d3, 0x6fa0_35c3, 0x77f2_db5b ];
+
+    jump() {
+        let s0 = 0;
+        let s1 = 0;
+        let s2 = 0;
+        let s3 = 0;
+        for(let i = 0; i < Xoshiro128.#JUMP.length; ++i) {
+            for(let b = 0; b < 32; ++b) {
+                if (Xoshiro128.#JUMP[i] & (1 << b)) {
+                    s0 ^= this.s[0];
+                    s1 ^= this.s[1];
+                    s2 ^= this.s[2];
+                    s3 ^= this.s[3];
+                }
+                this.next();
+            }
+        }
+            
+        this.s[0] = s0;
+        this.s[1] = s1;
+        this.s[2] = s2;
+        this.s[3] = s3;
+        return this;
+    }
+    
+}

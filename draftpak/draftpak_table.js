@@ -1,15 +1,47 @@
+import { Xoshiro128 } from "./rando.js";
+import * as cards from "./draftpak_cards.js";
+import "./draftpak_player.js";
+import { DraftScorer } from "./draftpak_scorer.js";
+import { ComputerAI, HumanAI, Player, PrioritizedChoiceAI, RandomChoiceAI } from "./draftpak_player.js";
 
-import { Xoshiro256 } from "./rando";
-import * as cards from "./draftpak_cards";
-import "./draftpak_player";
-import { DraftScorer } from "./draftpak_scorer";
-import { ComputerAI, HumanAI, Player, PrioritizedChoiceAI, RandomChoiceAI } from "./draftpak_player";
+import default_deck from "./default_deck.js";
 
 
+
+// Various draft passing methods (some of these options are only going to function properly with 4 players at the table)
+const PASS_LLL      = 0x00  // ( A <- B <- C <- D )     ( A <- B <- C <- D )        ( A <- B <- C <- D )
+const PASS_RRR      = 0x01  // ( A -> B -> C -> D )     ( A -> B -> C -> D )        ( A -> B -> C -> D )
+const PASS_LRL      = 0x02  // ( A <- B <- C <- D )     ( A -> B -> C -> D )        ( A <- B <- C <- D )
+const PASS_RLR      = 0x03  // ( A -> B -> C -> D )     ( A <- B <- C <- D )        ( A -> B -> C -> D )
+const PASS_Z_LLL    = 0x04  // ( A -> C -> D -> B )     ( A -> C -> D -> B )        ( A -> C -> D -> B )
+const PASS_Z_RRR    = 0x05  // ( A -> B -> D -> C )     ( A -> B -> D -> C )        ( A -> B -> D -> C )
+
+
+
+export class DraftDeck {
+    constructor(definition) {
+        this.definition = definition;
+    }
+
+    num_to_deal(num_players) {
+        return this.definition['hand_count'][num_players];
+    }
+
+    card_set() {
+        let card_set = [ ];
+        this.definition['deck'].forEach(item => card_set.push(...new Array(item['count']).fill(cards.string_to_card(item['card']))));
+        return card_set;
+    }
+
+    static default_deck() {
+        return new DraftDeck(default_deck);
+    }
+
+};
 
 class DraftTable {
-    constructor(seed, num_players, num_rounds, num_to_deal, alternate_passing) {
-        this.players = [ null ] * num_players;
+    constructor(seed, players, num_rounds, num_to_deal, alternate_passing) {
+        this.players = players;
         this.deck = [ ];
         this.discard_pile = [ ];
         this.alternate_passing = alternate_passing;
@@ -17,33 +49,33 @@ class DraftTable {
         this.num_rounds = num_rounds;
         this.current_round = 0;
         this.scorer = new DraftScorer(this);
-        this.random = new Xoshiro256(seed);
+        this.random = new Xoshiro128(seed);
     }
 
     game_over() { return this.current_round == this.num_rounds; }
 
-    start_game(cards) {
-        deck = [...cards];
-        cards.shuffle(deck, this.random);
-        for (let player in this.players) {
-            player.reset(this);
+    start_game(set) {
+        this.deck = [...set];
+        cards.shuffle(this.deck, this.random);
+        // reset the players
+        for (let i = 0; i < this.players.length; ++i) {
+            this.players[i].reset(this);
         }
-        // reset players
-        current_round = 0;
+        this.current_round = 0;
     }
 
     deal_round() {
-        round_robin_deal(deck, num_to_deal, players)
+        cards.round_robin_deal(this.deck, this.num_to_deal, this.players.map(p => p.hand));
     }
 
     score_round() {
-        this.current_round += 1
-        this.scorer.score_round(this.current_round == this.num_rounds)
+        this.current_round += 1;
+        this.scorer.score_round(this.current_round == this.num_rounds);
     }
 
     pass() {
-        if (alternate_passing) {
-            if ((current_round % 2) == 0) {
+        if (this.alternate_passing) {
+            if ((this.current_round % 2) == 0) {
                 this.#pass_left();
             } else {
                 this.#pass_right();
@@ -73,6 +105,21 @@ class DraftTable {
         this.players[0].hand = temp;
     }
 
+    #pass_accorss() {
+        // A   B
+        //   X
+        // C   D
+        // 0, 1, 2, 3
+        if (this.players.length == 4) {
+            let temp0 = this.players[0].hand;
+            let temp1 = this.players[1].hand;
+            this.players[0].hand = this.players[3].hand;
+            this.players[1].hand = this.players[2].hand;
+            this.players[3].hand = temp0;
+            this.players[2].hand = temp1;
+        }
+    }
+
     discard_all() {
         for (let player in players) {
             // Discard the drafted cards
@@ -85,64 +132,64 @@ class DraftTable {
 
 };
 
-class DraftGame {
-    static #CARDS_IN_DECK = new Map([
-        [cards.CARD_PAIR_SCORING,       14,],
-        [cards.CARD_TRIPLE_SCORING,     14,],
-        [cards.CARD_ESCALATING_PTS,     14,],
-        [cards.CARD_MID_TICKS,          12,],
-        [cards.CARD_HIGH_TICKS,         8,],
-        [cards.CARD_SMALL_TICKS,        6,],
+export class DraftGame {
 
-        [cards.CARD_MID_SCORING,        10,],
-        [cards.CARD_HIGH_SCORING,       5,],
-        [cards.CARD_SMALL_SCORING,      5,],
-        [cards.CARD_ACCUMULATING,       10,],
-        [cards.CARD_POINT_MULTIPLIER,   6,],
-        [cards.CARD_SWAP_FOR_TWO,       5,],
-    ]);
-    static #HAND_COUNT_PER_PLAYER = [ -1, -1, 10, 9, 8, 7 ];
-
-    constructor(show_round_callback, show_draft_callback, show_winner_callback, ui_selection_callback) {
-        this.show_round_callback = show_round_callback;        
+    constructor(show_round_callback, show_draft_callback, show_passing_callback, show_winner_callback, ui_selection_callback) {
+        this.show_round_callback = show_round_callback;
         this.show_draft_callback = show_draft_callback;
+        this.show_passing_callback = show_passing_callback;
         this.show_winner_callback = show_winner_callback;
         this.ui_selection_callback = ui_selection_callback;
     }
 
-    play(seed, num_players = 4, num_rounds = 3, alternate_passing = true) {
-        this.table = new DraftTable(seed, num_players, num_rounds, DraftGame.#HAND_COUNT_PER_PLAYER[num_players], alternate_passing);
-        this.table.players[0] = new Player(this.table, new HumanAI(this.ui_selection_callback), "You");
-        for (let i = 1; i < this.table.players.length; ++i) {
-            let name = ComputerAI.random_name(this.table.random);
-            while (this.table.players.filter(p => p != null && p.name === name)) {
-                name = ComputerAI.random_name(this.table.random);
+    setup(seed, num_players = 4, num_rounds = 3, alternate_passing = true) {
+        let random = new Xoshiro128(seed).jump();
+        let players = [ ];
+        players.push(new Player(null, new HumanAI(this.ui_selection_callback), "You"));
+        for (let i = 1; i < num_players; ++i) {
+            let name = ComputerAI.random_name(random);
+            let count = 0;
+            while ((players.filter(p => p != null && p.name === name).length > 0) && (count < 10)) {
+                name = ComputerAI.random_name(random);
+                ++count;
             }
             let ai = ((i % 2) == 1) ? new PrioritizedChoiceAI() : new RandomChoiceAI();
-            this.table.players[i] = new Player(this.table, ai, name);
+            players.push(new Player(null, ai, name));
         }
-        cards.shuffle(this.table.players, this.table.random);
 
-        card_set = [ ];
-        DraftGame.#CARDS_IN_DECK.forEach((k, v) => card_set.push(...([k]*v)));
-        this.table.start_game(card_set);
+        let deck = DraftDeck.default_deck();
 
-        while (!this.table.game_over) {
+        this.table = new DraftTable(seed, players, num_rounds, deck.num_to_deal(num_players), alternate_passing);
+        for (let i = 0; i < players.length; ++i) {
+            players[i].table = this.table;
+        }
+
+
+        this.table.start_game(deck.card_set());
+    }
+
+    step() {
+        if (this.table.players.filter(p => p.hand.length > 0).length <= 0) {
             this.table.deal_round();
             this.show_round_callback(this.table);
+        }
 
-            while (this.table.players.filter(p => p.hand.length > 0).length > 0) {
-                for (let p in this.table.players) {
-                    p.draft();
-                }
-                this.show_draft_callback(table);
-                this.table.pass();
+        if (this.table.players.filter(p => p.has_selected()).length == this.table.players.length) {
+            for (let i = 0; i < this.table.players.length; ++i) {
+                this.table.players[i].draft();
             }
-
+            this.show_draft_callback(table);
+            this.table.pass();
+            this.show_passing_callback(table);
+        }
+        
+        if (this.table.players.filter(p => p.hand.length > 0).length == 0) {
             this.table.score_round();
             this.table.discard_all();
         }
+    }
 
+    end() {
         this.show_winner_callback(table);
     }
 

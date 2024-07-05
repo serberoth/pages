@@ -1,5 +1,6 @@
+import "./draftpak_cards.js";
 
-import "./draftpak_cards";
+
 
 export class PlayerScore {
     constructor() {
@@ -18,6 +19,10 @@ export class Player {
         this.hand = [];
         this.drafted = [];
         this.score = new PlayerScore();
+    }
+
+    has_selected() {
+        this.ai.has_selected();
     }
 
     draft() {
@@ -43,25 +48,37 @@ export class Player {
 };
 
 export class IDraftingAI {
+    has_selected(player) { return false; }
     draft(player) { }
 };
 
 export class HumanAI extends IDraftingAI {
     constructor(selection_callback) {
+        super();
         this.selection_callback = selection_callback;
+    }
+
+    has_selected(player) {
+        let choice = this.selection_callback(player);
+        return (choice !== null) && (typeof(choice) === 'number') && (choice >= 0) && (choice <= player.hand.length);
     }
 
     draft(player) {
         // TODO: This does not handle the SWAP card directly
         let choice = this.selection_callback(player);
         player.pick(choice);
-    }
+    }    
 
 };
 
 export class ComputerAI extends IDraftingAI {
     constructor(selector_callback) {
+        super();
         this.selector_callback = selector_callback;
+    }
+
+    has_selected(player) {
+        return true;
     }
 
     draft(player) {
@@ -69,7 +86,7 @@ export class ComputerAI extends IDraftingAI {
         player.pick(choice);
     }
 
-    NAMES = [
+    static #NAMES = [
         "Anjali",
         "Chiara",
         "Francisco",
@@ -85,7 +102,8 @@ export class ComputerAI extends IDraftingAI {
     ];
 
     static random_name(random) {
-        return NAMES[random.ranged(NAMES.length)];
+        let index = random.ranged(ComputerAI.#NAMES.length);
+        return ComputerAI.#NAMES[index];
     }
 
 };

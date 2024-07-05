@@ -125,7 +125,7 @@ function onClickPreviewBuilder(index, src) {
 
 function confirmNewGame() {
   if (attempts > 0 || flipped.length > 0) {
-    return confirm("Are you sure?  This will begine a new game.");
+    return confirm("Are you sure?  This will begin a new game.");
   }
   return true;
 }

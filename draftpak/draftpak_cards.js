@@ -12,22 +12,24 @@ export const CARD_HIGH_TICKS            = 0x09;
 export const CARD_ACCUMULATING          = 0x0a;
 export const CARD_SWAP_FOR_TWO          = 0x0b;
 
+// NOTE: The order of these strings is in the order of the constants above and the methods below rely on that fact.
+const CARD_STRINGS = [
+    "N/3", "N/2", ">>>",
+    "+L+", "+M+", "+L+", "xMx",
+    "__*", "_**", "***",
+    "+++", "<->",
+    "???",
+];
+
 export function card_to_string(card) {
-    switch (card) {
-    case CARD_TRIPLE_SCORING:       return "A/3";
-    case CARD_PAIR_SCORING:         return "5/2";
-    case CARD_ESCALATING_PTS:       return ">>>";
-    case CARD_SMALL_SCORING:        return " +1";
-    case CARD_MID_SCORING:          return " +2";
-    case CARD_HIGH_SCORING:         return " +3";
-    case CARD_POINT_MULTIPLIER:     return " x3";
-    case CARD_SMALL_TICKS:          return "__*";
-    case CARD_MID_TICKS:            return "_**";
-    case CARD_HIGH_TICKS:           return "***";
-    case CARD_ACCUMULATING:         return "+++";
-    case CARD_SWAP_FOR_TWO:         return "<->";
+    if (card < 0 || card >= CARD_SMALL_SCORING.length) {
+        return CARD_STRINGS[CARD_STRINGS.length - 1];
     }
-    return "???";
+    return CARD_STRINGS[card];
+}
+
+export function string_to_card(string) {
+    return CARD_STRINGS.findIndex((s) => s === string);
 }
 
 export function cards_to_string(cards) {
@@ -50,8 +52,8 @@ export function shuffle(array, random) {
 
 export function round_robin_deal(deck, deal_count, piles) {
     for (let deal = 0; deal < deal_count; ++deal) {
-        for (let pile in piles) {
-            pile.push(deck.shift());
+        for (let i = 0; i < piles.length; ++i) {
+            piles[i].push(deck.shift());
         }
     }
 }
