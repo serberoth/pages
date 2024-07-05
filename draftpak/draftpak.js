@@ -4,6 +4,7 @@ import { Xoshiro128 } from "./rando.js";
 
 let game = null;
 let bkgSelection = 0;
+let selection = -1;
 const maxPlayers = 4;
 
 class CardDescriptor {
@@ -61,6 +62,41 @@ function add_card_face(index, kind, parent) {
     card.setAttribute('id', `card-${index}`);
     card.setAttribute('class', 'col-sm card card-face');
     card.dataset.index = `${index}`;
+    parent.appendChild(card);
+    const image = document.createElement('img');
+    image.setAttribute('class', 'card-face');
+    image.setAttribute('src', CARD_FACES.get(kind).image);
+    image.setAttribute('alt', CARD_FACES.get(kind).name);
+    card.appendChild(image);
+    const text = document.createElement('div');
+    text.setAttribute('class', 'card-text');
+    text.innerText = CARD_FACES.get(kind).name;
+    card.appendChild(text);
+}
+
+function onDblClickSelectCard(index) {
+    return function(event) {
+        const selected = document.getElementById(`card-${index}`);
+        if (selected !== null && selected !== undefined) {
+            console.log(`Selection: ${index}`);
+            selection = index;
+            game.step();
+        }
+    }
+}
+
+function add_selectable_card_face(index, kind, parent) {
+    /*
+    <div class="card" >
+        <img src="[CARD_FACE]" alt="CARD_FACE" class="card-face" >
+        <div class="card-text" >[CARD TEXT]</div>
+    </div>
+     */
+    const card = document.createElement('div');
+    card.setAttribute('id', `card-${index}`);
+    card.setAttribute('class', 'col-sm card card-face');
+    card.dataset.index = `${index}`;
+    card.ondblclick = onDblClickSelectCard(index);
     parent.appendChild(card);
     const image = document.createElement('img');
     image.setAttribute('class', 'card-face');
@@ -167,7 +203,7 @@ function add_4_player_ui(game, players, playarea) {
     add_spacer_ui(row2);
 }
 
-function add_playarea_ui() {
+function add_playarea() {
     const players = game.table.players;
 
     const scores = document.getElementById('players');
@@ -327,7 +363,7 @@ function show_round_callback(table) {
         if (i == 0) {
             for (let j = 0; j < player.hand.length; ++j) {
                 // Somehow a players hand is getting an invalid card (-1) on occasion..... this is not possible.
-                add_card_face(j, player.hand[j], playerHand);
+                add_selectable_card_face(j, player.hand[j], playerHand);
             }
         } else {
             for (let j = 0; j < player.hand.length; ++j) {
@@ -349,22 +385,27 @@ function show_round_callback(table) {
     }
 }
 // Called after all players have drafted a card before passing
-function show_draft_callback(table) { /* TODO: */ }
+// function show_draft_callback(table) { /* TODO: */ }
 // Called after all players have drafted a card after passing
-function show_passing_callback(table) { /* TODO: */ }
+// function show_passing_callback(table) { /* TODO: */ }
 // Called when the game is completed
 function show_winner_callback(table) { /* TODO: */ }
 // Called when the HumanAI????
-function ui_selection_callback(player) { /* TODO: */ }
+function ui_selection_callback(player) {
+    const tmp = selection;
+    selection = -1;
+    console.log(`Selected: ${tmp}`);
+    return tmp;
+}
 
 function new_game(num_players = 4) {
-    game = new DraftGame(show_round_callback, show_draft_callback, show_passing_callback, show_winner_callback, ui_selection_callback);
+    game = new DraftGame(show_round_callback, show_round_callback, show_round_callback, show_winner_callback, ui_selection_callback);
     const seed = Xoshiro128.generate_seed();
     console.log(`Seed: 0x${seed.toString(16)}`);
     const deck = DraftDeck.default_deck();
     game.setup(seed, deck, num_players);
 
-    add_playarea_ui();
+    add_playarea();
     add_controls(seed);
 
     game.step();
