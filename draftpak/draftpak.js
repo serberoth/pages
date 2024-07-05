@@ -319,7 +319,6 @@ function add_controls(seed) {
 
 // Called at the beginning of the round when the hands are delt and after they are passed
 function show_round_callback(table) {
-    console.log('Got Here!!!');
     for (let i = 0; i < table.players.length; ++i) {
         const player = table.players[i];
         // Update the players hand
