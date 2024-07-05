@@ -89,6 +89,10 @@ hr {
 	max-width: 100%;
 }
 
+.col-to-end {
+	margin-left: auto;
+}
+
 .btn {
 	display: inline-block;
 	font-weight: 400;
