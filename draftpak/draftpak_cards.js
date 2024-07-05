@@ -15,8 +15,8 @@ export const CARD_SWAP_FOR_TWO          = 0x0b;
 // NOTE: The order of these strings is in the order of the constants above and the methods below rely on that fact.
 const CARD_STRINGS = [
     "N/3", "N/2", ">>>",
-    "+L+", "+M+", "+L+", "xMx",
-    "__*", "_**", "***",
+    "+S+", "+M+", "+L+", "xMx",
+    "_*_", "*_*", "***",
     "+++", "<->",
     "???",
 ];

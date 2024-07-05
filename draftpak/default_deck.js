@@ -4,9 +4,9 @@ const deck = {
         { "card": "N/2", "count": 14, },
         { "card": "N/3", "count": 14, },
         { "card": ">>>", "count": 14, },
-        { "card": "_**", "count": 12, },
+        { "card": "*_*", "count": 12, },
         { "card": "***", "count":  8, },
-        { "card": "__*", "count":  6, },
+        { "card": "_*_", "count":  6, },
 
         { "card": "+M+", "count": 10, },
         { "card": "+L+", "count":  5, },
