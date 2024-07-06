@@ -1,0 +1,95 @@
+
+.card-container {
+    flex: content;
+	flex-grow: unset;
+	max-width: fit-content;
+
+    position: relative;
+    width: 48px;
+    height: 64px;
+    margin: 2px;
+}
+
+.card {
+    width: 48px;
+    height: 64px;
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    /* 5px rounded corners */
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 4px;
+    margin: 0;
+
+
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+		z-index: -2;
+        left: -50%;
+        top: -50%;
+        width: 200%;
+        height: 200%;
+        background-repeat: no-repeat;
+        background-size: 50% 50%, 50% 50%;
+        background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+        background: black;
+        /* background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C); */
+    }
+
+    &::after {
+		content: '';
+		position: absolute;
+		z-index: -1;
+		left: 3px;
+		top: 3px;
+		width: calc(100% - 6px);
+		height: calc(100% - 6px);
+		background: white;
+		border-radius: 3px;
+	}    
+}
+
+/* On mouse-over, add a deeper shadow */
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    transform: scale(1.4);
+}
+
+.card-highlight {
+    &::before {
+        animation: rotate 4s linear infinite;
+        background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+    }
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(1turn);
+    }
+}
+
+
+
+.card .card-back {
+    width: 48px;
+    height: 64px;
+    border-radius: 3px;
+}
+
+.card .card-face {
+    width: 48px;
+    height: 48px;
+    border-radius: 3px 3px 0 0;
+}
+
+/* Add some padding inside the card container */
+.card .card-text {
+    padding: 2px 16px;
+    border-radius: 0 0 3px 3px;
+}
+

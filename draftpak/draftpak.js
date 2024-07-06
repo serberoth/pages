@@ -1,4 +1,5 @@
 import * as cards from "./draftpak_cards.js";
+import { HumanAI } from "./draftpak_player.js";
 import { DraftGame, DraftDeck } from "./draftpak_table.js";
 import { Xoshiro128 } from "./rando.js";
 
@@ -82,11 +83,13 @@ const CARD_BACKS = [
 ];
 
 const seed = Xoshiro128.generate_seed();
+const random = new Xoshiro128(seed);
 console.log(`Seed: 0x${seed.toString(16)}`);
 
 let game = null;
 let bkgSelection = 0;
-let selection = [ ];
+let hand_selection = [ ];
+let swap_selection = NaN;
 
 
 
@@ -114,7 +117,7 @@ function onClickChangeCardBackBuilder(index, bkg) {
             }
             cardBacks[i].classList.add(`bkg-${bkg.name.toLowerCase()}`);
         }
-    }
+    };
 }
 
 function confirmNewGame() {
@@ -136,7 +139,7 @@ function onClickChangePlayersBuilder(index, num_players) {
             clicked.classList.add('btn-selected');
             new_game(num_players);
         }
-    }
+    };
 }
 
 function onDblClickSelectCard(index) {
@@ -144,7 +147,29 @@ function onDblClickSelectCard(index) {
         // TODO: Handle swap card
         const selected = document.getElementById(`card-${index}`);
         if (selected !== null && selected !== undefined) {
-            selection = [ index ];
+            // If we double clicked on a card select it or remove it from the current selection
+            let found = hand_selection.indexOf(index);
+            if (found != -1) {
+                hand_selection.splice(found, 1);
+                selected.classList.remove('card-highlight');
+            } else {
+                hand_selection.push(index);
+                selected.classList.add('card-highlight');
+            }
+
+            if (hand_selection.length === 0) {
+                return;
+            }
+            if (Object.is(swap_selection, NaN)) {
+                if (hand_selection.length !== 1) {
+                    return;
+                }
+            } else {
+                if (hand_selection.length !== 2) {
+                    return;
+                }
+            }
+
             game.draft_and_pass();
             if (game.close_round()) {
                 setTimeout(function() {
@@ -157,7 +182,26 @@ function onDblClickSelectCard(index) {
                 }, 2000);
             }
         }
-    }
+    };
+}
+
+function onClickSelectSwapCard(index) {
+    return function(event) {
+        const selected = document.getElementById(`swap-card-${index}`);
+        if (selected !== null && selected !== undefined) {
+            if (!Object.is(swap_selection, NaN)) {
+                const previous = document.getElementById(`swap-card-${swap_selection}`);
+                previous.classList.remove('card-highlight');
+            }
+            
+            if (swap_selection === index) {
+                swap_selection = NaN;
+            } else {
+                swap_selection = index;
+                selected.classList.add('card-highlight');
+            }
+        }
+    };
 }
 
 
@@ -166,37 +210,70 @@ function onDblClickSelectCard(index) {
 // UI Generation/Creation Functions
 //================================================================================
 function add_card_back(parent) {
-    const card = add_column(parent, null, 'card');
+    /*
+    <div class="card-container" >
+        <div class="card-border" ></div>
+        <div class="card" >
+            <div class="card-back bkg-back-xxx" ></div>
+        </div>
+    </div>
+    */
+    const card_container = document.createElement('div');
+    card_container.setAttribute('class', 'card-container');
+    parent.appendChild(card_container);
+    // const card_container = add_column(parent, null, 'card-container');
+    // Create an empty element that contains the boarder
+    const card_border = document.createElement('div');
+    card_border.setAttribute('class', 'card-border');
+    card_container.appendChild(card_border);
+    // Create an emelemt that contains the card back image
+    const card = document.createElement('div');
+    card.dataset.name = CARD_BACKS[bkgSelection].name;
+    card.dataset.index = bkgSelection;
+    card.setAttribute('class', 'card');
+    card_container.appendChild(card);
+    // Create the element for the card back
     const image = document.createElement('div');
     image.setAttribute('class', `card-back bkg-${CARD_BACKS[bkgSelection].name.toLowerCase()}`);
     card.appendChild(image);
 }
 
-function add_card_face(index, kind, parent, selectable = false) {
+function add_card_face(index, kind, parent) {
     /*
-    <div class="card" >
-        <img src="[CARD_FACE]" alt="CARD_FACE" class="card-face" >
-        <div class="card-text" >[CARD TEXT]</div>
-    </div>    
-     */
-    const card = selectable ? add_column(parent, null, 'card card-face', `card-${index}`) : add_column(parent, null, 'card card-face');
-    card.dataset.index = `${index}`;
+    <div class="card-container" >
+        <div class="card-border" ></div>
+        <div class="card" >
+            <div class="card-face bkg-face-xxx" >
+            <div class="card-text" >[CARD TEXT]</div>
+        </div>
+    </div>
+    */
+    const card_container = document.createElement('div');
+    card_container.setAttribute('class', 'card-container');
+    parent.appendChild(card_container);
+    // const card_container = add_column(parent, null, 'card-container');
+    // Create an empty element that contains the boarder
+    const card_border = document.createElement('div');
+    card_border.setAttribute('class', 'card-border');
+    card_container.appendChild(card_border);
+    // Create an element that contains the card face
+    const card = document.createElement('div');
     card.dataset.kind = `${kind}`;
-    if (selectable) {
-        card.ondblclick = onDblClickSelectCard(index);
-    }    
-
-    const image = document.createElement('img');
-    image.setAttribute('class', 'card-face');
-    image.setAttribute('src', CARD_FACES.get(kind).image);
-    image.setAttribute('alt', CARD_FACES.get(kind).name);
+    card.dataset.index = `${index}`;
+    card.setAttribute('class', 'card');
+    card_container.appendChild(card);
+    // Create an element for the image on the card face
+    const image = document.createElement('div');
+    image.setAttribute('class', `card-face bkg-${CARD_FACES.get(kind).image}`);
     card.appendChild(image);
 
     const text = document.createElement('div');
     text.setAttribute('class', 'card-text');
     text.innerText = CARD_FACES.get(kind).name;
     card.appendChild(text);
-}    
+
+    return card;
+}
 
 function add_player_ui(game, index, player, parent) {
     const player_ui = add_column(parent, null, null, `player-${index}-ui`);
@@ -364,7 +441,7 @@ function add_controls_num_players(control_panel) {
         column.appendChild(button);
     }
 }
-function add_controls(seed) {
+function add_controls() {
     const control_panel = document.getElementById('control_panel');
     control_panel.innerHTML = '';
 
@@ -399,8 +476,9 @@ function show_round_callback(table) {
         playerHand.innerHTML = '';
         if (i === 0) {
             for (let j = 0; j < player.hand.length; ++j) {
-                // Somehow a players hand is getting an invalid card (-1) on occasion..... this is not possible.
-                add_card_face(j, player.hand[j], playerHand, true);
+                const card = add_card_face(j, player.hand[j], playerHand);
+                card.setAttribute('id', `card-${j}`);
+                card.ondblclick = onDblClickSelectCard(j);
             }
         } else {
             for (let j = 0; j < player.hand.length; ++j) {
@@ -411,7 +489,17 @@ function show_round_callback(table) {
         const playerDrafted = document.getElementById(`player-${i}-drafted`);
         playerDrafted.innerHTML = '';
         for (let j = 0; j < player.drafted.length; ++j) {
-            add_card_face(null, player.drafted[j], playerDrafted);
+            if (i === 0) {
+                if (player.drafted[j] === cards.CARD_SWAP_FOR_TWO) {
+                    const card = add_card_face(null, player.drafted[j], playerDrafted);
+                    card.setAttribute('id', `swap-card-${j}`);
+                    card.onclick = onClickSelectSwapCard(j);
+                } else {
+                    add_card_face(null, player.drafted[j], playerDrafted);
+                }
+            } else {
+                add_card_face(null, player.drafted[j], playerDrafted);
+            }
         }
         // Update the total score display
         const playerScore = document.getElementById(`player-${i}-score`);
@@ -498,13 +586,18 @@ function show_winner_callback(table) {
     unfade(victory, 10);
 }
 
-// Called when the HumanAI????
+// Called when the HumanAI wants to make a selection or determine if it has a selection (so the operation must be idempotent when not verifying)
 function ui_selection_callback(player, verify) {
-    const tmp = selection;
-    if (!(!!verify)) {
-        selection = [ ];
+    if (!(player.ai instanceof HumanAI)) {
+        return;
     }
-    return [ tmp ];
+
+    const choice = { 'hand': hand_selection, 'swap': swap_selection };
+    if (!(!!verify)) {
+        hand_selection = [ ];
+        swap_selection = NaN;
+    }
+    return choice;
 }
 
 
@@ -513,12 +606,14 @@ function ui_selection_callback(player, verify) {
 // Initialization routines
 //================================================================================
 function new_game(num_players = 4) {
+    random.jump();
+
     game = new DraftGame(show_round_callback, show_round_callback, show_round_callback, show_winner_callback, ui_selection_callback);
     const deck = DraftDeck.default_deck();
-    game.setup(seed, deck, num_players);
+    game.setup(random, deck, num_players);
 
     add_playarea();
-    add_controls(seed);
+    add_controls();
 
     game.start_round();
 }

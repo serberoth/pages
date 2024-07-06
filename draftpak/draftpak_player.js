@@ -32,13 +32,24 @@ export class Player {
 
     pick(choice) {
         // console.log(`Player ${this.name} Hand: ${cards.cards_to_string(this.hand)}`);
-        for (let i = 0; i < choice.length; ++i) {
-            let card = this.hand.splice(choice[i], 1);
-            this.drafted.push(...card);
+        const hand = choice['hand'];
+        // Add the cards to the drafted pile in the order they were selected
+        for (let i = 0; i < hand.length; ++i) {
+            this.drafted.push(this.hand[hand[i]]);
+        }
+        // Sort the indicies from large to small to remove them from the hand
+        hand.sort((a, b) => b - a);
+        for (let i = 0; i < hand.length; ++i) {
+            this.hand.splice(hand[i], 1);
+        }
+        const swap = choice['swap'];
+        if (!Object.is(swap, NaN)) {
+            let card = this.drafted.splice(swap, 1);
+            this.hand.push(...card);
         }
         // console.log(`Player ${this.name} has drafted ${cards.card_to_string(card)}`);
         // console.log(`Player Hand: ${cards.cards_to_string(this.hand)}`);
-        console.log(`Drafted Set: ${cards.cards_to_string(this.drafted)}`);
+        // console.log(`Drafted Set: ${cards.cards_to_string(this.drafted)}`);
     }
 
     clear_cards() {
@@ -67,10 +78,24 @@ export class HumanAI extends IDraftingAI {
 
     has_selected(player) {
         let choice = this.selection_callback(player, true);
-        if ((choice === null) || (choice === undefined) || !(choice instanceof Array) || choice.length === 0) {
+        if ((choice === null) || (choice === undefined)) {
             return false;
         }
-        for (let i = 0; i < choice.length; ++i) {
+        const hand = choice['hand'];
+        const swap = choice['swap'];
+        if (hand === null || hand === undefined || swap === null || swap === undefined) {
+            return false;
+        }
+        if (Object.is(swap, NaN) && hand.length !== 1) {
+            return false;
+        }
+        if (!Object.is(swap, NaN) && hand.length !== 2) {
+            return false;
+        }
+        if (!Object.is(swap, NaN) && ((swap < 0) || (swap >= player.drafted.length))) {
+            return false;
+        }
+        for (let i = 0; i < hand.length; ++i) {
             if ((choice[i] < 0) || (choice[i] >= player.hand.length)) {
                 return false;
             }
@@ -130,7 +155,7 @@ export class RandomChoiceAI extends ComputerAI {
 
     static choose(player) {
         // Randomly choose a card from the hand with no particular strategy; this is a bad plan...
-        return [ player.table.random.ranged(player.hand.length) ];
+        return { 'hand': [ player.table.random.ranged(player.hand.length) ], 'swap': NaN };
     }
 
 };
@@ -160,7 +185,7 @@ export class PrioritizedChoiceAI extends ComputerAI {
         for (let card in priority) {
             let choice = PrioritizedChoiceAI.first_index_of(player.hand, card);
             if (choice != -1) {
-                return [ choice ];
+                return { 'hand': [ choice ], 'swap': NaN };
             }
         }
         // If somehow our selectors above did not choose a card return a random choice.

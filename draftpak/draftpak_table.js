@@ -40,7 +40,7 @@ export class DraftDeck {
 };
 
 class DraftTable {
-    constructor(seed, players, num_rounds, num_to_deal, alternate_passing) {
+    constructor(random, players, num_rounds, num_to_deal, alternate_passing) {
         this.players = players;
         this.deck = [ ];
         this.discard_pile = [ ];
@@ -49,7 +49,7 @@ class DraftTable {
         this.num_rounds = num_rounds;
         this.current_round = 0;
         this.scorer = new DraftScorer(this);
-        this.random = new Xoshiro128(seed);
+        this.random = random;
     }
 
     game_over() { return this.current_round === this.num_rounds; }
@@ -145,8 +145,7 @@ export class DraftGame {
 
     num_players() { return this.table.players.length; }
 
-    setup(seed, deck, num_players = 4, num_rounds = 3, alternate_passing = true) {
-        let random = new Xoshiro128(seed).jump();
+    setup(random, deck, num_players = 4, num_rounds = 3, alternate_passing = true) {
         let players = [ ];
         players.push(new Player(null, new HumanAI(this.ui_selection_callback), "You"));
         for (let i = 1; i < num_players; ++i) {
@@ -160,7 +159,7 @@ export class DraftGame {
             players.push(new Player(null, ai, name));
         }
 
-        this.table = new DraftTable(seed, players, num_rounds, deck.num_to_deal(num_players), alternate_passing);
+        this.table = new DraftTable(random, players, num_rounds, deck.num_to_deal(num_players), alternate_passing);
         for (let i = 0; i < players.length; ++i) {
             players[i].table = this.table;
         }
