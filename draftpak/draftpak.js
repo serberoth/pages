@@ -51,28 +51,29 @@ function add_spacer_column(parent) {
 const MAX_PLAYERS = 4;
 
 class CardDescriptor {
-    constructor(name, image) {
+    constructor(name, image, tooltip) {
         this.name = name;
         this.image = image;
+        this.tooltip = tooltip;
     }
 };
 
 const CARD_FACES = new Map([
-    [cards.CARD_TRIPLE_SCORING,     new CardDescriptor('A/3', ''), ],
-    [cards.CARD_PAIR_SCORING,       new CardDescriptor('5/2', ''), ],
-    [cards.CARD_ESCALATING_PTS,     new CardDescriptor('>>>', ''), ],
+    [cards.CARD_TRIPLE_SCORING,     new CardDescriptor('A/3', '', 'Collect 3 and score 10 pts.'), ],
+    [cards.CARD_PAIR_SCORING,       new CardDescriptor('5/2', '', 'Collect 2 and score 5 pts.'), ],
+    [cards.CARD_ESCALATING_PTS,     new CardDescriptor('>>>', '', 'Collect more and score: [ 1, 3, 6, 10, 15 ] pts.'), ],
 
-    [cards.CARD_SMALL_SCORING,      new CardDescriptor(' +1', ''), ],
-    [cards.CARD_MID_SCORING,        new CardDescriptor(' +2', ''), ],
-    [cards.CARD_HIGH_SCORING,       new CardDescriptor(' +3', ''), ],
-    [cards.CARD_POINT_MULTIPLIER,   new CardDescriptor(' x3', ''), ],
+    [cards.CARD_SMALL_SCORING,      new CardDescriptor(' +1', '', 'Score 1 pt. Can be multiplied!'), ],
+    [cards.CARD_MID_SCORING,        new CardDescriptor(' +2', '', 'Score 2 pts. Can be multiplied!'), ],
+    [cards.CARD_HIGH_SCORING,       new CardDescriptor(' +3', '', 'Score 3 pts. Can be multiplied!'), ],
+    [cards.CARD_POINT_MULTIPLIER,   new CardDescriptor(' x3', '', 'Multiply your next scoring card by x3.'), ],
 
-    [cards.CARD_SMALL_TICKS,        new CardDescriptor('_*_', ''), ],
-    [cards.CARD_MID_TICKS,          new CardDescriptor('*_*', ''), ],
-    [cards.CARD_HIGH_TICKS,         new CardDescriptor('***', ''), ],
+    [cards.CARD_SMALL_TICKS,        new CardDescriptor('_*_', '', '1 star; 6 or 3 pts for the most or second most.'), ],
+    [cards.CARD_MID_TICKS,          new CardDescriptor('*_*', '', '2 stars; 6 or 3 pts for the most or second most.'), ],
+    [cards.CARD_HIGH_TICKS,         new CardDescriptor('***', '', '3 stars; 6 or 3 pts for the most or second most.'), ],
 
-    [cards.CARD_ACCUMULATING,       new CardDescriptor(' @ ', ''), ],
-    [cards.CARD_SWAP_FOR_TWO,       new CardDescriptor('<->', ''), ],
+    [cards.CARD_ACCUMULATING,       new CardDescriptor(' @ ', '', '6 pts for the most at the end of the game, -6 for the least.'), ],
+    [cards.CARD_SWAP_FOR_TWO,       new CardDescriptor('<->', '', 'Swap this for 2 cards!'), ],
 ]);
 const CARD_BACKS = [
     new CardDescriptor('Bees', '/draftpak/cards/backs/hexagons.svg'),
@@ -249,8 +250,12 @@ function add_card_face(index, kind, parent) {
     </div>
     */
     const card_container = document.createElement('div');
-    card_container.setAttribute('class', 'card-container');
+    card_container.setAttribute('class', 'card-container tooltip');
     parent.appendChild(card_container);
+    const tooltip = document.createElement('span');
+    tooltip.setAttribute('class', '');
+    tooltip.innerText = CARD_FACES.get(kind).tooltip;
+    card_container.appendChild(tooltip);
     // const card_container = add_column(parent, null, 'card-container');
     // Create an empty element that contains the boarder
     const card_border = document.createElement('div');
@@ -460,6 +465,17 @@ function add_controls() {
     seed_div.setAttribute('class', 'col-sm');
     seed_div.innerText = `Seed: ${seed.toString(16)}`;
     row1.appendChild(seed_div);
+
+    const tooltips = add_column(row1);
+    const label = document.createElement('label');
+    label.setAttribute('for', 'show-tooltips');
+    label.innerText = 'Show Tooltips';
+    tooltips.append(label);
+    const check = document.createElement('input');
+    check.setAttribute('type', 'checkbox');
+    check.setAttribute('id', 'show-tooltips');
+    check.setAttribute('checked', true);
+    label.appendChild(check);
 }
 
 

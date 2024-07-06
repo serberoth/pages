@@ -63,7 +63,7 @@
 .card-highlight {
     &::before {
         animation: rotate 4s linear infinite;
-        background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+        background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
     }
 }
 
@@ -89,7 +89,8 @@
 
 /* Add some padding inside the card container */
 .card .card-text {
-    padding: 2px 16px;
+    text-align: justify;
+    padding: 2px 8px;
     border-radius: 0 0 3px 3px;
 }
 
