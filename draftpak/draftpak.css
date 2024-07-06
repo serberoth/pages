@@ -26,6 +26,7 @@
 /* On mouse-over, add a deeper shadow */
 .card:hover {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    transform: scale(1.2);
 }
 
 .card {
@@ -43,9 +44,10 @@
     padding: 2px 16px;
 }
 
-div#victory {
+div.victory {
+    width: 100%;
     display: none;
-    padding: 400px 0px;
+    padding: 160px 0px;
     font-size: 62pt;
     font-weight: bold;
     color: gold;
@@ -53,10 +55,6 @@ div#victory {
     text-align: center;
     text-shadow: 4px 4px black;
     vertical-align: middle;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 5;
 }
 
 .controls-label {
@@ -107,27 +105,27 @@ div#victory {
 }
 
 @media screen and (min-width: 576px) {
-    #players-label {
+    .controls-label {
         display: unset;
     }
 }
 
 @media screen and (min-width: 768px) {
-    div#victory {
-        padding: 200px 0px;
+    div.victory {
+        padding: 80px 0px;
         font-size: 48pt;
     }
 }
 
 @media screen and (min-width: 992px) {
-    div#victory {
-    padding: 300px 0px;
+    div.victory {
+    padding: 120px 0px;
     font-size: 62pt;
     }
 }
 @media screen and (min-width: 1200px) {
-    div#victory {
-        padding: 400px 0px;
+    div.victory {
+        padding: 160px 0px;
         font-size: 62pt;
     }
 }

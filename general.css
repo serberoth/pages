@@ -58,6 +58,9 @@ hr {
 	align-items: center;
 	justify-content: center;
 }
+.center-text {
+	text-align: center;
+}
 
 .row {
 	display: -webkit-box;
@@ -118,4 +121,14 @@ hr {
 .btn-secondary:hover {
 	background-color: #838e97;
 	border-color: #838e97;
+	transform: scale(1.2);
+	transition: 200ms;
+}
+
+.btn-card {
+	color: #fff;
+}
+.btn-card:hover {
+	transform: scale(1.2);
+	transition: 200ms;
 }

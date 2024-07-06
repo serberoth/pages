@@ -26,8 +26,7 @@ var bkgSelection = 0;
 var flipping = null;
 var shaking = null;
 
-function callback() {
-}
+function callback() { }
 
 function victory() {
   if (players.length > 1) {
@@ -61,8 +60,8 @@ function onClickBuilder(index) {
         if (flipped.length >= 2) {
           var a = $(flipped[0]);
           var b = $(flipped[1]);
-          console.log(cards[a.data('index')] + ' == ' + cards[b.data('index')]);
-          if (cards[a.data('index')] == cards[b.data('index')]) {
+          console.log(cards[a.data('index')] + ' === ' + cards[b.data('index')]);
+          if (cards[a.data('index')] === cards[b.data('index')]) {
             players[whoseTurn]++;
             a.effect('explode', {}, 500, callback);
             b.effect('explode', {}, 500, callback);
@@ -83,7 +82,7 @@ function onClickBuilder(index) {
           } else {
             whoseTurn = (whoseTurn + 1) % players.length;
             for (var n = 0; n < players.length; ++n) {
-              if (n == whoseTurn) {
+              if (n === whoseTurn) {
                 $('#player-' + n).parent().addClass('active');
               } else {
                 $('#player-' + n).parent().removeClass('active');
@@ -166,7 +165,7 @@ function add_players() {
   for (var i = 0; i < players.length; ++i) {
     var player = document.createElement('div');
     $(player).appendTo(scores);
-    if (i == whoseTurn) {
+    if (i === whoseTurn) {
       $(player).addClass('col-sm active');
     } else {
       $(player).addClass('col-sm');
@@ -194,7 +193,7 @@ function add_previews(backgrounds) {
    */
   for (var i = 0; i < backgrounds.length; ++i) {
     var preview = document.createElement('span');
-    if (i == bkgSelection) {
+    if (i === bkgSelection) {
       $(preview).addClass('preview selected');
     } else {
       $(preview).addClass('preview');
@@ -235,7 +234,7 @@ function add_board_sizes(board_sizes) {
   $(wrapper).appendTo(outer).addClass('col-sm');
   for (var i = 0; i < board_sizes.length; ++i) {
     var size = document.createElement('span');
-    if (board_sizes[i].x == width && board_sizes[i].y == height) {
+    if ((board_sizes[i].x === width) && (board_sizes[i].y === height)) {
       $(size).addClass('sizes selected');
     } else {
       $(size).addClass('sizes');

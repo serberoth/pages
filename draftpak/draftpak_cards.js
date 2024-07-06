@@ -21,6 +21,10 @@ const CARD_STRINGS = [
     "???",
 ];
 
+export function string_to_card(string) {
+    return CARD_STRINGS.findIndex((s) => s === string);
+}
+
 export function card_to_string(card) {
     if (card < 0 || card >= CARD_SMALL_SCORING.length) {
         return CARD_STRINGS[CARD_STRINGS.length - 1];
@@ -28,14 +32,10 @@ export function card_to_string(card) {
     return CARD_STRINGS[card];
 }
 
-export function string_to_card(string) {
-    return CARD_STRINGS.findIndex((s) => s === string);
-}
-
 export function cards_to_string(cards) {
     let str = "[ ";
-    for (let card in cards) {
-        str += card_type_to_string(card) + ", ";
+    for (let i = 0; i < cards.length; ++i) {
+        str += card_to_string(cards[i]) + ", ";
     }
     str += " ]";
     return str;

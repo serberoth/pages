@@ -29,46 +29,55 @@ export class DraftScorer {
     }
 
     winner() {
-        highest_values = (array) => {
+        const highest_values = (array) => {
+            if (array.length === 0) { return []; }
             let max = array[0].c;
             return [...array].filter(p => p.c === max).map(p => p.p);
         };
 
         let point_totals = [...this.table.players].map(p => ({ p: p, c: p.score.point_total })).sort((a, b) => (b.c - a.c));
         let highest_points = highest_values(point_totals);
-        if (highest_points.length == 1) { return highest_points[0]; }
+        if (highest_points.length === 1) { return highest_points[0]; }
         let accum_totals = [...this.table.players].map(p => ({ p: p, c: p.score.accumulated_total })).sort((a, b) => (b.c - a.c));
         let highest_accumulated = highest_values(accum_totals);
-        if (highest_accumulated.length == 1) { return highest_accumulated[0]; }
+        if (highest_accumulated.length === 1) { return highest_accumulated[0]; }
         return null;
     }
 
     score_round(is_last_round) {
         for (let i = 0; i < this.table.players.length; ++i) {
-            var player = this.table.players[i];
-            var points_this_round = 0;
+            const player = this.table.players[i];
+            let points_this_round = 0;
 
             player.score.points_last_round = 0;
 
+            console.log(`Scoring ${player.name} :: ${cards.cards_to_string(player.drafted)}`);
+
             // Calculate points for cards that score when you have a pair of them
             points_this_round += DraftScorer.#num_pairs(player.drafted) * this.point_values.pair_scoring;
+            console.log(`With Scoring Pairs: ${points_this_round}`);
             // Calculate points for cards that score when you have a three of them
             points_this_round += DraftScorer.#num_triples(player.drafted) * this.point_values.triple_scoring;
+            console.log(`With Scoring Triples: ${points_this_round}`);
             // Calculate points for cards that have an escalating point scale
-            let escalating_index = Math.min(DraftScorer.#num_escalating(player.drafted), (this.points_values.escalating_score.length - 1));
+            let escalating_index = Math.min(DraftScorer.#num_escalating(player.drafted), (this.point_values.escalating_score.length - 1));
             points_this_round += this.point_values.escalating_score[escalating_index];
+            console.log(`With Escalating: ${points_this_round}`);
             // Calculate points for cards that directly score points
             points_this_round += this.#num_scoring(player.drafted);
+            console.log(`With Scoring Cards: ${points_this_round}`);
 
             // Add the count of the accumulated cards into the players total
             player.score.accumulated_last_round = DraftScorer.#num_accumulating(player.drafted);
+            console.log(`Accumulated Cards: ${player.score.accumulated_last_round}`);
             player.score.accumulated_total += player.score.accumulated_last_round;
 
             player.score.points_last_round = points_this_round;
             player.score.point_total += player.score.points_last_round;
         }
 
-        highest_values = (array) => {
+        const highest_values = (array) => {
+            if (array.length === 0) { return []; }
             let max = array[0].c;
             return [...array].filter(p => p.c === max).map(p => p.p);
         };
@@ -81,14 +90,16 @@ export class DraftScorer {
             let max = players_with_ticks[0].c;
             let highest_ticks = highest_values(players_with_ticks);
             for (let i = 0; i < highest_ticks.length; ++i) {
-                highest_ticks[i].score.points_last_round += ((this.points_values.ticks_points_most / highest_ticks.length) | 0);
+                highest_ticks[i].score.points_last_round += ((this.point_values.ticks_points_most / highest_ticks.length) | 0);
+                console.log(`Highest Ticks: ${highest_ticks[i].name}: ${highest_ticks[i].score.points_last_round}`);
                 highest_ticks[i].score.point_total += ((this.point_values.ticks_points_most / highest_ticks.length) | 0);
             }
-            if (highest_ticks.length == 1) {
-                let second_highest_ticks = highest_values([...players_with_ticks].filter(p => p.c > max));
+            if (highest_ticks.length === 1) {
+                let second_highest_ticks = highest_values([...players_with_ticks].filter(p => max > p.c));
                 if (second_highest_ticks.length > 0) {
                     for (let i = 0; i < second_highest_ticks.length; ++i) {
                         second_highest_ticks[i].score.points_last_round += ((this.point_values.ticks_points_next / second_highest_ticks.length) | 0);
+                        console.log(`Second Highest Ticks: ${second_highest_ticks[i].name}: ${second_highest_ticks[i].score.points_last_round}`);
                         second_highest_ticks[i].score.point_total += ((this.point_values.ticks_points_next / second_highest_ticks.length) | 0);
                     }
                 }
@@ -102,13 +113,15 @@ export class DraftScorer {
             if (highest_accum.length < this.table.players.length) {
                 for (let i = 0; i < highest_accum.length; ++i) {
                     highest_accum[i].score.points_last_round += this.point_values.accumulated_most / highest_accum.length;
+                    console.log(`Highest Accum: ${highest_accum[i].name}: ${highest_accum[i].score.points_last_round}`);
                     highest_accum[i].score.point_total += this.point_values.accumulated_most / highest_accum.length;
                 }
             }
             if (this.table.players.length > 2) {
                 let lowest_accum = highest_values(players_with_accum.toReversed());
                 for (let i = 0; i < lowest_accum.length; ++i) {
-                    lowest_accum[i].score.points_last_round += this.points_values.accumulated_least / lowest_accum.length;
+                    lowest_accum[i].score.points_last_round += this.point_values.accumulated_least / lowest_accum.length;
+                    console.log(`Least Accum: ${lowest_accum[i].name}: ${lowest_accum[i].score.points_last_round}`);
                     lowest_accum[i].score.point_total += this.point_values.accumulated_least / lowest_accum.length;
                 }
             }
@@ -116,11 +129,11 @@ export class DraftScorer {
     }
 
     #num_scoring(drafted) {
-        var multiplier = 0;
-        var sum = 0;
-        for (let card in drafted) {
-            var score = 0;
-            switch (card) {
+        let multiplier = 0;
+        let sum = 0;
+        for (let i = 0; i < drafted.length; ++i) {
+            let score = 0;
+            switch (drafted[i]) {
             case cards.CARD_POINT_MULTIPLIER: ++multiplier; continue;
             case cards.CARD_SMALL_SCORING:    score = this.point_values.small_scoring; break;
             case cards.CARD_MID_SCORING:      score = this.point_values.mid_scoring; break;

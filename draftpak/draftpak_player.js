@@ -1,4 +1,5 @@
 import "./draftpak_cards.js";
+import * as cards from "./draftpak_cards.js";
 
 
 
@@ -22,7 +23,7 @@ export class Player {
     }
 
     has_selected() {
-        this.ai.has_selected(this);
+        return this.ai.has_selected(this);
     }
 
     draft() {
@@ -30,8 +31,14 @@ export class Player {
     }
 
     pick(choice) {
-        let card = this.hand.splice(choice, choice);
-        this.drafted.push(card);
+        // console.log(`Player ${this.name} Hand: ${cards.cards_to_string(this.hand)}`);
+        for (let i = 0; i < choice.length; ++i) {
+            let card = this.hand.splice(choice[i], 1);
+            this.drafted.push(...card);
+        }
+        // console.log(`Player ${this.name} has drafted ${cards.card_to_string(card)}`);
+        // console.log(`Player Hand: ${cards.cards_to_string(this.hand)}`);
+        console.log(`Drafted Set: ${cards.cards_to_string(this.drafted)}`);
     }
 
     clear_cards() {
@@ -59,13 +66,21 @@ export class HumanAI extends IDraftingAI {
     }
 
     has_selected(player) {
-        let choice = this.selection_callback(player);
-        return (choice !== null) && (typeof(choice) === 'number') && (choice >= 0) && (choice <= player.hand.length);
+        let choice = this.selection_callback(player, true);
+        if ((choice === null) || (choice === undefined) || !(choice instanceof Array) || choice.length === 0) {
+            return false;
+        }
+        for (let i = 0; i < choice.length; ++i) {
+            if ((choice[i] < 0) || (choice[i] >= player.hand.length)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     draft(player) {
         // TODO: This does not handle the SWAP card directly
-        let choice = this.selection_callback(player);
+        let choice = this.selection_callback(player, false);
         player.pick(choice);
     }    
 
@@ -115,7 +130,7 @@ export class RandomChoiceAI extends ComputerAI {
 
     static choose(player) {
         // Randomly choose a card from the hand with no particular strategy; this is a bad plan...
-        return player.table.random.ranged(player.hand.length);        
+        return [ player.table.random.ranged(player.hand.length) ];
     }
 
 };
@@ -127,25 +142,25 @@ export class PrioritizedChoiceAI extends ComputerAI {
 
     static choose(player) {
         const priority = [
-            CARD_TWO_FOR_FIVE_PTS,
-            CARD_THREE_FOR_TEN_PTS,
-            CARD_THREE_POINTS,
-            CARD_ESCALATING_PTS,
-            CARD_TWO_POINTS,
+            cards.CARD_PAIR_SCORING,
+            cards.CARD_TRIPLE_SCORING,
+            cards.CARD_HIGH_SCORING,
+            cards.CARD_ESCALATING_PTS,
+            cards.CARD_MID_SCORING,
 
-            CARD_MULTIPLIER_X3,
-            CARD_THREE_TICKS,
-            CARD_TWO_TICKS,
-            CARD_ACCUMULATED,
-            CARD_ONE_TICK,
-            CARD_ONE_POINT,
-            CARD_SWAP_FOR_TWO,
+            cards.CARD_POINT_MULTIPLIER,
+            cards.CARD_HIGH_TICKS,
+            cards.CARD_MID_TICKS,
+            cards.CARD_ACCUMULATING,
+            cards.CARD_SMALL_SCORING,
+            cards.CARD_SMALL_TICKS,
+            cards.CARD_SWAP_FOR_TWO,
         ];
 
         for (let card in priority) {
             let choice = PrioritizedChoiceAI.first_index_of(player.hand, card);
             if (choice != -1) {
-                return choice;
+                return [ choice ];
             }
         }
         // If somehow our selectors above did not choose a card return a random choice.

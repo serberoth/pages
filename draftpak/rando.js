@@ -50,7 +50,7 @@ export class Xoshiro128 {
     ranged(min, max) {
         // If only a min parameter is supplied use it as the max instead and set the min to zero (0).
         // We do this/allow this because there is no function overloading in javascript.
-        if (max == undefined) {
+        if ((max === null) || (max === undefined)) {
             max = min;
             min = 0;
         }

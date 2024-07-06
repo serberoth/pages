@@ -52,7 +52,7 @@ class DraftTable {
         this.random = new Xoshiro128(seed);
     }
 
-    game_over() { return this.current_round == this.num_rounds; }
+    game_over() { return this.current_round === this.num_rounds; }
 
     start_game(set) {
         this.deck = [...set];
@@ -70,12 +70,12 @@ class DraftTable {
 
     score_round() {
         this.current_round += 1;
-        this.scorer.score_round(this.current_round == this.num_rounds);
+        this.scorer.score_round(this.current_round === this.num_rounds);
     }
 
     pass() {
         if (this.alternate_passing) {
-            if ((this.current_round % 2) == 0) {
+            if ((this.current_round % 2) === 0) {
                 this.#pass_left();
             } else {
                 this.#pass_right();
@@ -110,7 +110,7 @@ class DraftTable {
         //   X
         // C   D
         // 0, 1, 2, 3
-        if (this.players.length == 4) {
+        if (this.players.length === 4) {
             let temp0 = this.players[0].hand;
             let temp1 = this.players[1].hand;
             this.players[0].hand = this.players[3].hand;
@@ -121,7 +121,8 @@ class DraftTable {
     }
 
     discard_all() {
-        for (let player in players) {
+        for (let i = 0; i < this.players.length; ++i) {
+            const player = this.players[i];
             // Discard the drafted cards
             this.discard_pile.push(...player.drafted);
             // Discard any remaining cards in hand (of which there should be none)
@@ -142,6 +143,8 @@ export class DraftGame {
         this.ui_selection_callback = ui_selection_callback;
     }
 
+    num_players() { return this.table.players.length; }
+
     setup(seed, deck, num_players = 4, num_rounds = 3, alternate_passing = true) {
         let random = new Xoshiro128(seed).jump();
         let players = [ ];
@@ -153,7 +156,7 @@ export class DraftGame {
                 name = ComputerAI.random_name(random);
                 ++count;
             }
-            let ai = ((i % 2) == 1) ? new PrioritizedChoiceAI() : new RandomChoiceAI();
+            let ai = ((i % 2) === 1) ? new PrioritizedChoiceAI() : new RandomChoiceAI();
             players.push(new Player(null, ai, name));
         }
 
@@ -166,29 +169,42 @@ export class DraftGame {
         this.table.start_game(deck.card_set());
     }
 
-    step() {
+    start_round() {
+        if (this.table.game_over()) {
+            return false;
+        }
         if (this.table.players.filter(p => p.hand.length > 0).length <= 0) {
             this.table.deal_round();
             this.show_round_callback(this.table);
+            return true;
         }
+        return false;
+    }
 
-        if (this.table.players.filter(p => p.has_selected()).length == this.table.players.length) {
+    close_round() {
+        if (this.table.players.filter(p => p.hand.length > 0).length === 0) {
+            this.table.score_round();
+            this.table.discard_all();
+            return true;
+        }
+        return false;
+    }
+
+    draft_and_pass() {
+        if (this.table.players.filter(p => p.has_selected()).length === this.table.players.length) {
             for (let i = 0; i < this.table.players.length; ++i) {
                 this.table.players[i].draft();
             }
-            this.show_draft_callback(table);
+            this.show_draft_callback(this.table);
             this.table.pass();
-            this.show_passing_callback(table);
+            this.show_passing_callback(this.table);
+            return true;
         }
-        
-        if (this.table.players.filter(p => p.hand.length > 0).length == 0) {
-            this.table.score_round();
-            this.table.discard_all();
-        }
+        return false;
     }
 
     end() {
-        this.show_winner_callback(table);
+        this.show_winner_callback(this.table);
     }
 
 };
