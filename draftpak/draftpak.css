@@ -2,13 +2,13 @@
 .player-hand {
     min-height: 168px;
     height: 100%;
-    padding: 4px;
+    padding: 2px;
 }
 
 .player-drafted {
-    min-height: 168px;
+    min-height: 84px;
     height: 100%;
-    padding: 4px;
+    padding: 2px;
 }
 
 div.victory {
