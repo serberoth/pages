@@ -1,0 +1,130 @@
+
+.player-hand {
+    min-height: 84px;
+    height: 100%;
+    padding: 2px;
+}
+
+.player-drafted {
+    min-height: 84px;
+    height: 100%;
+    padding: 2px;
+}
+
+.tooltip > span {
+    visibility: hidden;
+    width: 120px;
+    background-color: #ccc;
+    color: inherit;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+body:has(#show-tooltips:checked) {
+    & .tooltip:hover > span {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+
+
+div.victory {
+    width: 100%;
+    display: none;
+    padding: 160px 0px;
+    font-size: 62pt;
+    font-weight: bold;
+    color: gold;
+    text-transform: uppercase;
+    text-align: center;
+    text-shadow: 4px 4px black;
+    vertical-align: middle;
+}
+
+.controls-label {
+    vertical-align: middle;
+}
+
+
+
+.btn-card-back {
+    width: 48px;
+    height: 48px;
+    margin: 0 3px;
+    border-radius: 4px;
+    border: transparent solid 2px;
+}
+
+.btn-players {
+    width: 48px;
+    height: 48px;
+    margin: 0 2px;
+}
+
+.btn-selected {
+    border-radius: 4px;
+    border: gold solid 2px;
+}
+
+
+
+@media screen and (min-width: 320px) and (max-width: 576px) {
+    .controls-label {
+        display: none;
+    }
+
+    .btn-card-back {
+        padding: 0 1px;
+        width: 32px;
+        height: 32px;
+    }
+
+    .btn-players {
+        width: 32px;
+        height: 32px;
+        font-size: 0.6rem;
+    }
+
+    .btn-selected {
+        border-radius: 2px;
+        border: gold solid 1px;
+    }
+}
+
+@media screen and (min-width: 576px) {
+    .controls-label {
+        display: unset;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    div.victory {
+        padding: 80px 0px;
+        font-size: 48pt;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    div.victory {
+    padding: 120px 0px;
+    font-size: 62pt;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    div.victory {
+        padding: 160px 0px;
+        font-size: 62pt;
+    }
+}
