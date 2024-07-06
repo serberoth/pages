@@ -76,11 +76,11 @@ const CARD_FACES = new Map([
     [cards.CARD_SWAP_FOR_TWO,       new CardDescriptor('<->', '', 'Swap this for 2 cards!'), ],
 ]);
 const CARD_BACKS = [
-    new CardDescriptor('Bees', '/draftpak/cards/backs/hexagons.svg'),
-    new CardDescriptor('Aztec', '/draftpak/cards/backs/aztec.svg'),
-    new CardDescriptor('Circuits', '/draftpak/cards/backs/circuit-board.svg'),
-    new CardDescriptor('Gears', '/draftpak/cards/backs/floating-cogs.svg'),
-    new CardDescriptor('Moroccan', '/draftpak/cards/backs/moroccan.svg'),
+    new CardDescriptor('Bees', 'bees'),
+    new CardDescriptor('Aztec', 'aztec'),
+    new CardDescriptor('Circuits', 'circuits'),
+    new CardDescriptor('Gears', 'gears'),
+    new CardDescriptor('Moroccan', 'moroccan'),
 ];
 
 const seed = Xoshiro128.generate_seed();
@@ -235,7 +235,7 @@ function add_card_back(parent) {
     card_container.appendChild(card);
     // Create the element for the card back
     const image = document.createElement('div');
-    image.setAttribute('class', `card-back bkg-${CARD_BACKS[bkgSelection].name.toLowerCase()}`);
+    image.setAttribute('class', `card-back bkg-${CARD_BACKS[bkgSelection].image}`);
     card.appendChild(image);
 }
 
@@ -416,7 +416,7 @@ function add_controls_card_backs(control_panel) {
         const button = document.createElement('button');
         button.setAttribute('type', 'button');
         button.setAttribute('id', `card-back-${i}`);
-        button.setAttribute('class', `btn btn-card btn-card-back bkg-${CARD_BACKS[i].name.toLowerCase()}`);
+        button.setAttribute('class', `btn btn-card btn-card-back bkg-${CARD_BACKS[i].image}`);
         if (i === bkgSelection) {
             button.classList.add('btn-selected');
         }
