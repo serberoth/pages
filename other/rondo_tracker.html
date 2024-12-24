@@ -183,6 +183,9 @@
     player2['def'] = 0;
     player2['life'] = 15;
 
+    $('#player1-name').removeClass('alert alert-dark');
+    $('#player2-name').removeClass('alert alert-dark');
+
     $('#player1-atk').text(0);
     $('#player1-volt').text(0);
     $('#player1-def').text(0);
@@ -197,13 +200,13 @@
   $('#first-player').click(function() {
     var selection = getRandomInt(0, 2) == 0;
 
-    $('#player1-name').removeClass('alert-info');
-    $('#player2-name').removeClass('alert-info');
+    $('#player1-name').removeClass('alert alert-dark');
+    $('#player2-name').removeClass('alert alert-dark');
 
     if (selection) {
-      $('#player1-name').addClass('alert-info');
+      $('#player1-name').addClass('alert alert-dark');
     } else {
-      $('#player2-name').addClass('alert-info');
+      $('#player2-name').addClass('alert alert-dark');
     }
 
     alert(selection ? player1.name : player2.name);
