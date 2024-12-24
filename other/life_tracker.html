@@ -1,0 +1,195 @@
+<html>
+<head>
+<title>Life Tracker</title>
+
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <style>
+  body {
+    background-color: lightgray;
+  }
+
+  div.spacer {
+    padding-top: 60px;
+  }
+
+  div.name {
+    font-size: 32pt;
+  }
+  span.life-total {
+    font-size: 120pt;
+  }
+  span.poison-total {
+    font-size: 80pt;
+  }
+  </style>
+
+  <script src="https://use.fontawesome.com/8c49f5639e.js"></script>
+</head>
+<body>
+  <div class="container" >
+    <div class="row spacer" >
+      <div id="p1name" class="col-sm-4 text-center name" >Player 1</div>
+      <div class="col-sm-2 text-center" ><i class="fa fa-2x fa-flask" ></i></div>
+      <div id="p2name" class="col-sm-4 text-center name" >Player 2</div>
+      <div class="col-sm-2 text-center" ><i class="fa fa-2x fa-flask" ></i></div>
+    </div>
+    <div class="row" >
+      <div class="col-sm-4 text-center alert alert-success" >
+        <span id="player1" class="life-total" >20</span>
+      </div>
+      <div class="col-sm-2 text-center align-middle" >
+        <span id="player1poison" class="poison-total" >0</span>
+      </div>
+      <div class="col-sm-4 text-center alert alert-success" >
+        <span id="player2" class="life-total" >20</span>
+      </div>
+      <div class="col-sm-2 text-center align-middle" >
+        <span id="player2poison" class="poison-total" >0</span>
+      </div>
+    </div>
+    <div class="row" >
+      <div class="col-sm-3 text-center" >
+        <a id="p1add" class="btn btn-lg btn-primary" ><i class="fa fa-2x fa-plus-square-o" ></i><i class="fa fa-2x fa-heart-o" ></i></a>
+      </div>
+      <div class="col-sm-3 text-center" >
+        <a id="p1sub" class="btn btn-lg btn-primary" ><i class="fa fa-2x fa-minus-square-o "></i><i class="fa fa-2x fa-heart-o" ></i></a>
+      </div>
+      <div class="col-sm-3 text-center" >
+        <a id="p2add" class="btn btn-lg btn-primary" ><i class="fa fa-2x fa-plus-square-o" ></i><i class="fa fa-2x fa-heart-o" ></i></a>
+      </div>
+      <div class="col-sm-3 text-center" >
+        <a id="p2sub" class="btn btn-lg btn-primary" ><i class="fa fa-2x fa-minus-square-o" ></i><i class="fa fa-2x fa-heart-o" ></i></a>
+      </div>
+    </div>
+    <div class="row" >
+      <div class="col-sm-3 text-center" >
+        <a id="p1padd" class="btn btn-lg btn-primary" ><i class="fa fa-2x fa-plus-square-o" ></i><i class="fa fa-2x fa-flask" ></i></a>
+      </div>
+      <div class="col-sm-3 text-center" >
+        <a id="p1psub" class="btn btn-lg btn-primary" ><i class="fa fa-2x fa-minus-square-o "></i><i class="fa fa-2x fa-flask" ></i></a>
+      </div>
+      <div class="col-sm-3 text-center" >
+        <a id="p2padd" class="btn btn-lg btn-primary" ><i class="fa fa-2x fa-plus-square-o" ></i><i class="fa fa-2x fa-flask" ></i></a>
+      </div>
+      <div class="col-sm-3 text-center" >
+        <a id="p2psub" class="btn btn-lg btn-primary" ><i class="fa fa-2x fa-minus-square-o" ></i><i class="fa fa-2x fa-flask" ></i></a>
+      </div>
+    </div>
+    <div class="row spacer" >
+      <div class="col-sm-12 text-center" >
+        <a id="reset" class="btn btn-lg btn-primary" >Reset</a>
+        <a id="first-player" class="btn btn-lg btn-primary" >Who's First</a>
+      </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script>
+  function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.ceil(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  var p1name = 'Player 1';
+  var p2name = 'Player 2';
+  var p1life = 20;
+  var p1poison = 0;
+  var p2life = 20;
+  var p2poison = 0;
+
+  $('#p1name').click(function() {
+    var name = prompt('Player Name', p1name);
+    if (name !== null) {
+      p1name = name;
+      $('#p1name').text(p1name);
+    }
+  });
+  $('#p2name').click(function() {
+    var name = prompt('Player Name', p2name);
+    if (name !== null) {
+      p2name = name;
+      $('#p2name').text(p2name);
+    }
+  });
+
+  $('#p1add').click(function() {
+    $('#player1').text(++p1life);
+  });
+  $('#p1sub').click(function() {
+    $('#player1').text(--p1life);
+    if (p1life <= 0) {
+      $('#player1').parent().addClass('alert-danger');
+    }
+  });
+  $('#p2add').click(function() {
+    $('#player2').text(++p2life);
+  });
+  $('#p2sub').click(function() {
+    $('#player2').text(--p2life);
+    if (p2life <= 0) {
+      $('#player2').parent().addClass('alert-danger');
+    }
+  });
+
+  $('#p1padd').click(function() {
+    $('#player1poison').text(++p1poison);
+    if (p1poison >= 10) {
+      $('#player1').parent().addClass('alert-danger');
+    }
+  });
+  $('#p1psub').click(function() {
+    if (p1poison > 0) {
+      $('#player1poison').text(--p1poison);
+    }
+  });
+  $('#p2padd').click(function() {
+    $('#player2poison').text(++p2poison);
+    if (p2poison >= 10) {
+      $('#player2').parent().addClass('alert-danger');
+    }
+  });
+  $('#p2psub').click(function() {
+    if (p2poison > 0) {
+      $('#player2poison').text(--p2poison);
+    }
+  });
+
+  $('#reset').click(function() {
+    p1life = 20;
+    p2life = 20;
+    p1poison = 0;
+    p2poison = 0;
+
+    $('#player1').text(p1life);
+    $('#player2').text(p2life);
+
+    $('#player1poison').text(p1poison);
+    $('#player2poison').text(p2poison);
+
+    $('#player1').parent().removeClass('alert-danger');
+    $('#player2').parent().removeClass('alert-danger');
+
+    $('#p1name').removeClass('alert-info');
+    $('#p2name').removeClass('alert-info');
+  });
+
+  $('#first-player').click(function() {
+    var selection = getRandomInt(0, 2) == 0;
+
+    $('#p1name').removeClass('alert-info');
+    $('#p2name').removeClass('alert-info');
+
+    if (selection) {
+      $('#p1name').addClass('alert-info');
+    } else {
+      $('#p2name').addClass('alert-info');
+    }
+
+    alert(selection ? p1name : p2name);
+  });
+  </script>
+</body>
+</html>
+
