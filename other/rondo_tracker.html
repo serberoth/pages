@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 <title>Rondo Tracker</title>
@@ -7,18 +8,19 @@
 
   <style>
   body {
-    background-color: lightgray;
-  }
-
-  div.spacer {
-    padding-top: 60px;
+    background-color: black;
+    color: white;
   }
 
   div.name {
-    font-size: 32pt;
+    font-size: 24pt;
   }
-  span.total-value {
-    font-size: 80pt;
+  div.total-value {
+    font-size: 64pt;
+  }
+
+  i.x2 {
+    font-size: 1.8em;
   }
   </style>
 
@@ -27,98 +29,90 @@
 </head>
 <body>
   <div class="container" >
-    <div class="row spacer" >
-      <div id="player1-name" class="col-sm-12 text-center name" >Player 1</div>
+    <div class="row" >
+      <div id="player1-name" class="player-name col-sm-12 text-center name alert" data-player="1" >Player 1</div>
     </div>
     <div class="row" >
-      <div class="col-sm-3 text-center alert alert-danger" ><i class="mdi mdi-sword" ></i></div>
-      <div class="col-sm-3 text-center alert alert-success" ><i class="mdi mdi-lightning-bolt" ></i></div>
-      <div class="col-sm-3 text-center alert alert-info" ><i class="mdi mdi-shield" ></i></div>
-      <div class="col-sm-3 text-center alert alert-light" ><i class="mdi mdi-heart" ></i></div>
+      <div class="col-sm-3 text-center align-middle alert alert-danger" data-bs-toggle="tooltip" data-bs-title="Attack" >
+        <i class="mdi mdi-sword x2" ></i>
+        <div id="player1-atk" class="total-value" >0</div>
+        <div>
+          <a class="add btn btn-lg btn-primary" data-player="1" data-attribute="atk" data-min="0" data-max="9" ><i class="mdi mdi-plus-circle" ></i><i class="mdi mdi-sword" ></i></a>
+          <a class="sub btn btn-lg btn-primary" data-player="1" data-attribute="atk" data-min="0" data-max="9" ><i class="mdi mdi-minus-circle" ></i><i class="mdi mdi-sword" ></i></a>
+        </div>
+      </div>
+      <div class="col-sm-3 text-center align-middle alert alert-success" data-bs-toggle="tooltip" data-bs-title="Voltage" >
+        <i class="mdi mdi-lightning-bolt x2" ></i>
+        <div id="player1-volt" class="total-value" >0</div>
+        <div>
+          <a class="add btn btn-lg btn-primary" data-player="1" data-attribute="volt" data-min="0" data-max="9" ><i class="mdi mdi-plus-circle "></i><i class="mdi mdi-lightning-bolt" ></i></a>
+          <a class="sub btn btn-lg btn-primary" data-player="1" data-attribute="volt" data-min="0" data-max="9" ><i class="mdi mdi-minus-circle "></i><i class="mdi mdi-lightning-bolt" ></i></a>
+        </div>
+      </div>
+      <div class="col-sm-3 text-center align-middle alert alert-info" data-bs-toggle="tooltip" data-bs-title="Defense" >
+        <i class="mdi mdi-shield x2" ></i>
+        <div id="player1-def" class="total-value" >0</div>
+        <div>
+          <a class="add btn btn-lg btn-primary" data-player="1" data-attribute="def" data-min="0" data-max="9" ><i class="mdi mdi-plus-circle" ></i><i class="mdi mdi-shield" ></i></a>
+          <a class="sub btn btn-lg btn-primary" data-player="1" data-attribute="def" data-min="0" data-max="9" ><i class="mdi mdi-minus-circle" ></i><i class="mdi mdi-shield" ></i></a>
+        </div>
+      </div>
+      <div class="col-sm-3 text-center align-middle alert alert-light" data-bs-toggle="tooltip" data-bs-title="Life" >
+        <i class="mdi mdi-heart x2" ></i>
+        <div id="player1-life" class="total-value" >15</div>
+        <div>
+          <a class="add btn btn-lg btn-primary" data-player="1" data-attribute="life" ><i class="mdi mdi-plus-circle" ></i><i class="mdi mdi-heart" ></i></a>
+          <a class="sub btn btn-lg btn-primary" data-player="1" data-attribute="life" ><i class="mdi mdi-minus-circle" ></i><i class="mdi mdi-heart" ></i></a>
+        </div>
+      </div>
     </div>
+    
+    <hr />
     <div class="row" >
-      <div class="col-sm-3 text-center align-middle alert alert-danger" >
-        <span id="player1-atk" class="total-value" >0</span>
-      </div>
-      <div class="col-sm-3 text-center align-middle alert alert-success" >
-        <span id="player1-volt" class="total-value" >0</span>
-      </div>
-      <div class="col-sm-3 text-center align-middle alert alert-info" >
-        <span id="player1-def" class="total-value" >0</span>
-      </div>
-      <div class="col-sm-3 text-center align-middle alert alert-light" >
-        <span id="player1-life" class="total-value" >15</span>
-      </div>
-    </div>
-    <div class="row" >
-      <div class="col-sm-3 text-center" >
-        <a class="add btn btn-md btn-primary" data-player="1" data-attribute="atk" ><i class="mdi mdi-plus-circle" ></i><i class="mdi mdi-sword" ></i></a>
-        <a class="sub btn btn-md btn-primary" data-player="1" data-attribute="atk" ><i class="mdi mdi-minus-circle" ></i><i class="mdi mdi-sword" ></i></a>
-      </div>
-      <div class="col-sm-3 text-center" >
-        <a class="add btn btn-md btn-primary" data-player="1" data-attribute="volt" ><i class="mdi mdi-plus-circle "></i><i class="mdi mdi-lightning-bolt" ></i></a>
-        <a class="sub btn btn-md btn-primary" data-player="1" data-attribute="volt" ><i class="mdi mdi-minus-circle "></i><i class="mdi mdi-lightning-bolt" ></i></a>
-      </div>
-      <div class="col-sm-3 text-center" >
-        <a class="add btn btn-md btn-primary" data-player="1" data-attribute="def" ><i class="mdi mdi-plus-circle" ></i><i class="mdi mdi-shield" ></i></a>
-        <a class="sub btn btn-md btn-primary" data-player="1" data-attribute="def" ><i class="mdi mdi-minus-circle" ></i><i class="mdi mdi-shield" ></i></a>
-      </div>
-      <div class="col-sm-3 text-center" >
-        <a class="add btn btn-md btn-primary" data-player="1" data-attribute="life" ><i class="mdi mdi-plus-circle" ></i><i class="mdi mdi-heart" ></i></a>
-        <a class="sub btn btn-md btn-primary" data-player="1" data-attribute="life" ><i class="mdi mdi-minus-circle" ></i><i class="mdi mdi-heart" ></i></a>
-      </div>
-    </div>
-
-
-
-    <div class="row spacer" >
-      <div id="player2-name" class="col-sm-12 text-center name" >Player 2</div>
-    </div>
-    <div class="row" >
-      <div class="col-sm-3 text-center alert alert-danger" ><i class="mdi mdi-sword" ></i></div>
-      <div class="col-sm-3 text-center alert alert-success" ><i class="mdi mdi-lightning-bolt" ></i></div>
-      <div class="col-sm-3 text-center alert alert-info" ><i class="mdi mdi-shield" ></i></div>
-      <div class="col-sm-3 text-center alert alert-light" ><i class="mdi mdi-heart" ></i></div>
-    </div>
-    <div class="row" >
-      <div class="col-sm-3 text-center align-middle alert alert-danger" >
-        <span id="player2-atk" class="total-value" >0</span>
-      </div>
-      <div class="col-sm-3 text-center align-middle alert alert-success" >
-        <span id="player2-volt" class="total-value" >0</span>
-      </div>
-      <div class="col-sm-3 text-center align-middle alert alert-info" >
-        <span id="player2-def" class="total-value" >0</span>
-      </div>
-      <div class="col-sm-3 text-center align-middle alert alert-light" >
-        <span id="player2-life" class="total-value" >15</span>
-      </div>
-    </div>
-    <div class="row" >
-      <div class="col-sm-3 text-center" >
-        <a class="add btn btn-md btn-primary" data-player="2" data-attribute="atk" ><i class="mdi mdi-plus-circle" ></i><i class="mdi mdi-sword" ></i></a>
-        <a class="sub btn btn-md btn-primary" data-player="2" data-attribute="atk" ><i class="mdi mdi-minus-circle" ></i><i class="mdi mdi-sword" ></i></a>
-      </div>
-      <div class="col-sm-3 text-center" >
-        <a class="add btn btn-md btn-primary" data-player="2" data-attribute="volt" ><i class="mdi mdi-plus-circle "></i><i class="mdi mdi-lightning-bolt" ></i></a>
-        <a class="sub btn btn-md btn-primary" data-player="2" data-attribute="volt" ><i class="mdi mdi-minus-circle "></i><i class="mdi mdi-lightning-bolt" ></i></a>
-      </div>
-      <div class="col-sm-3 text-center" >
-        <a class="add btn btn-md btn-primary" data-player="2" data-attribute="def" ><i class="mdi mdi-plus-circle" ></i><i class="mdi mdi-shield" ></i></a>
-        <a class="sub btn btn-md btn-primary" data-player="2" data-attribute="def" ><i class="mdi mdi-minus-circle" ></i><i class="mdi mdi-shield" ></i></a>
-      </div>
-      <div class="col-sm-3 text-center" >
-        <a class="add btn btn-md btn-primary" data-player="2" data-attribute="life" ><i class="mdi mdi-plus-circle" ></i><i class="mdi mdi-heart" ></i></a>
-        <a class="sub btn btn-md btn-primary" data-player="2" data-attribute="life" ><i class="mdi mdi-minus-circle" ></i><i class="mdi mdi-heart" ></i></a>
-      </div>
-    </div>
-
-    <div class="row spacer" >
       <div class="col-sm-12 text-center" >
         <a id="reset" class="btn btn-lg btn-primary" >Reset</a>
         <a id="first-player" class="btn btn-lg btn-primary" >Who's First</a>
       </div>
-  </div>
+    </div>
+    <hr />
+
+    <div class="row" >
+      <div class="col-sm-3 text-center align-middle alert alert-danger" data-bs-toggle="tooltip" data-bs-title="Attack" >
+        <i class="mdi mdi-sword x2" ></i>
+        <div id="player2-atk" class="total-value" >0</div>
+        <div>
+          <a class="add btn btn-lg btn-primary" data-player="2" data-attribute="atk" data-min="0" data-max="9" ><i class="mdi mdi-plus-circle" ></i><i class="mdi mdi-sword" ></i></a>
+          <a class="sub btn btn-lg btn-primary" data-player="2" data-attribute="atk" data-min="0" data-max="9" ><i class="mdi mdi-minus-circle" ></i><i class="mdi mdi-sword" ></i></a>
+        </div>
+      </div>
+      <div class="col-sm-3 text-center align-middle alert alert-success" data-bs-toggle="tooltip" data-bs-title="Voltage" >
+        <i class="mdi mdi-lightning-bolt x2" ></i>
+        <div id="player2-volt" class="total-value" >0</div>
+        <div>
+          <a class="add btn btn-lg btn-primary" data-player="2" data-attribute="volt" data-min="0" data-max="9" ><i class="mdi mdi-plus-circle "></i><i class="mdi mdi-lightning-bolt" ></i></a>
+          <a class="sub btn btn-lg btn-primary" data-player="2" data-attribute="volt" data-min="0" data-max="9" ><i class="mdi mdi-minus-circle "></i><i class="mdi mdi-lightning-bolt" ></i></a>
+        </div>
+      </div>
+      <div class="col-sm-3 text-center align-middle alert alert-info" data-bs-toggle="tooltip" data-bs-title="Defense" >
+        <i class="mdi mdi-shield x2" ></i>
+        <div id="player2-def" class="total-value" >0</div>
+        <div>
+          <a class="add btn btn-lg btn-primary" data-player="2" data-attribute="def" data-min="0" data-max="9" ><i class="mdi mdi-plus-circle" ></i><i class="mdi mdi-shield" ></i></a>
+          <a class="sub btn btn-lg btn-primary" data-player="2" data-attribute="def" data-min="0" data-max="9" ><i class="mdi mdi-minus-circle" ></i><i class="mdi mdi-shield" ></i></a>
+        </div>
+      </div>
+      <div class="col-sm-3 text-center align-middle alert alert-light" data-bs-toggle="tooltip" data-bs-title="Life" >
+        <i class="mdi mdi-heart x2" ></i>
+        <div id="player2-life" class="total-value" >15</div>
+        <div>
+          <a class="add btn btn-lg btn-primary" data-player="2" data-attribute="life" ><i class="mdi mdi-plus-circle" ></i><i class="mdi mdi-heart" ></i></a>
+          <a class="sub btn btn-lg btn-primary" data-player="2" data-attribute="life" ><i class="mdi mdi-minus-circle" ></i><i class="mdi mdi-heart" ></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="row" >
+      <div id="player2-name" class="player-name col-sm-12 text-center name alert" data-player="2" >Player 2</div>
+    </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -129,87 +123,104 @@
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
-  const player1 = {
-    'name': 'Player 1',
-    'atk': 0,
-    'volt': 0,
-    'def': 0,
-    'life': 15,
+  class Player {
+    name = '';
+    #attack = 0;
+    #voltage = 0;
+    #defense = 0;
+    #life = 15;
+
+    constructor(name) {
+      this.name = name;
+    }
+
+    attr(attr_name, val) {
+      switch (attr_name) {
+        case 'atk':   return this.#attack = (val !== undefined) ? val : this.#attack;
+        case 'volt':  return this.#voltage = (val !== undefined) ? val : this.#voltage;
+        case 'def':   return this.#defense = (val !== undefined) ? val : this.#defense;
+        case 'life':  return this.#life = (val !== undefined) ? val : this.#life;
+      }
+      return undefined;
+    }
   };
-  const player2 = {
-    'name': 'Player 2',
-    'atk': 0,
-    'volt': 0,
-    'def': 0,
-    'life': 15,
-  };
 
-  $('#player1-name').click(function() {
-    var name = prompt('Player Name', player1['name']);
-    if (name !== null) {
-      player1['name'] = name;
-      $('#player1-name').text(player1['name']);
+  $(document).ready(function () {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+    const players = [ new Player('Player 1'), new Player('Player 2') ];
+
+    const setLimits = function() {
+      const limits = [ 'min', 'max' ];
+      for (var i = 0; i < limits.length; ++i) {
+        const lim = $(this).data(limits[i]);
+        if (lim !== undefined && lim !== null && lim !== '') {
+          $(this).data(limits[i], parseInt(lim));
+        } else {
+          $(this).data(limits[i], undefined);
+        }
+      }
     }
-  });
-  $('#player2-name').click(function() {
-    var name = prompt('Player Name', player2['name']);
-    if (name !== null) {
-      player2['name'] = name;
-      $('#player2-name').text(player2['name']);
-    }
-  });
+    $.each($('.add'), setLimits);
+    $.each($('.sub'), setLimits);
 
-  $('.add').click(function() {
-    const player = $(this).data('player');
-    const attr = $(this).data('attribute');
-    const value = player == 1 ? ++player1[attr] : ++player2[attr];
-    $(`#player${player}-${attr}`).text(value);
-  });
-  $('.sub').click(function() {
-    const player = $(this).data('player');
-    const attr = $(this).data('attribute');
-    const value = player == 1 ? --player1[attr] : --player2[attr];
-    $(`#player${player}-${attr}`).text(value);
-  });
+    $('.player-name').click(function() {
+      const player = $(this).data('player');
+      var name = prompt('Player Name', players[player - 1].name);
+      if (name !== undefined && name !== null && name !== '') {
+        $(`.player${player}-name`).text(players[player - 1].name = name);
+      }
+    });
 
-  $('#reset').click(function() {
-    player1['atk'] = 0;
-    player1['volt'] = 0;
-    player1['def'] = 0;
-    player1['life'] = 15;
+    const updateVal = function(players, delta) {
+      return function() {
+        const player = $(this).data('player');
+        const attr = $(this).data('attribute');
 
-    player2['atk'] = 0;
-    player2['volt'] = 0;
-    player2['def'] = 0;
-    player2['life'] = 15;
+        const min = $(this).data('min');
+        const max = $(this).data('max');
+        var val = players[player - 1].attr(attr) + delta;
+        if (min !== undefined) {
+          val = Math.max(min, val);
+        }
+        if (max !== undefined) {
+          val = Math.min(val, max);
+        }
+        val = players[player - 1].attr(attr, val);
+        $(`#player${player}-${attr}`).text(val);
+      }
+    };
 
-    $('#player1-name').removeClass('alert alert-dark');
-    $('#player2-name').removeClass('alert alert-dark');
+    $('.add').click(updateVal(players,  1));
+    $('.sub').click(updateVal(players, -1));
 
-    $('#player1-atk').text(0);
-    $('#player1-volt').text(0);
-    $('#player1-def').text(0);
-    $('#player1-life').text(15);
+    $('#reset').click(function() {
+      const attrs = [ 'atk', 'volt', 'def', 'life' ];
+      players[0] = new Player(players[0].name);
+      players[1] = new Player(players[1].name);
 
-    $('#player2-atk').text(0);
-    $('#player2-volt').text(0);
-    $('#player2-def').text(0);
-    $('#player2-life').text(15);
-  });
+      $('#player1-name').removeClass('alert-dark');
+      $('#player2-name').removeClass('alert-dark');
 
-  $('#first-player').click(function() {
-    var selection = getRandomInt(0, 2) == 0;
+      for (var i = 0; i < attrs.length; ++i) {
+        $(`#player1-${attrs[i]}`).text(players[0].attr(attrs[i]));
+        $(`#player2-${attrs[i]}`).text(players[1].attr(attrs[i]));
+      }
+    });
 
-    $('#player1-name').removeClass('alert alert-dark');
-    $('#player2-name').removeClass('alert alert-dark');
+    $('#first-player').click(function() {
+      var selection = getRandomInt(0, 2) == 0;
 
-    if (selection) {
-      $('#player1-name').addClass('alert alert-dark');
-    } else {
-      $('#player2-name').addClass('alert alert-dark');
-    }
+      $('#player1-name').removeClass('alert-dark');
+      $('#player2-name').removeClass('alert-dark');
 
-    alert(selection ? player1.name : player2.name);
+      if (selection) {
+        $('#player1-name').addClass('alert-dark');
+      } else {
+        $('#player2-name').addClass('alert-dark');
+      }
+    });
   });
   </script>
 </body>
