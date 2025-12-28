@@ -1,0 +1,406 @@
+<html>
+<head>
+<title>Life Tracker</title>
+
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" rel="stylesheet" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" ></script>
+
+  <style>
+  body {
+    background-color: lightgray;
+  }
+
+  div.spacer {
+    padding-top: 60px;
+  }
+
+  div#period {
+    font-size: 24pt;
+  }
+  div.name {
+    font-size: 32pt;
+  }
+  span.match-score {
+    font-size: 120pt;
+  }
+  span.poison-total {
+    font-size: 80pt;
+  }
+  
+  div.home {
+    padding: 15px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+  }
+  div.away {
+    padding: 15px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+  }
+
+  div.choice {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+  }
+  </style>
+
+</head>
+<body>
+  <div class="container" >
+    <div class="row" >
+      <div class="col-sm-1" >
+        <a id="next-period" class="btn btn-lg btn-primary" data-toggle="tooltip" data-placement="auto" title="Next Period" ><i class="fa-solid fa-square-plus" ></i></a>
+      </div>
+      <div class="col-sm-4" ></div>
+      <div class="col-sm-2 text-center" >
+        <div class="row text-center" >
+          <div class="col-sm-12 text-center">Period</div>
+        </div>
+        <div class="row text-center" >
+          <div id="period" class="col-sm-10 text-center" >1</div>
+        </div>
+      </div>
+      <div class="col-sm-4" ></div>
+      <div class="col-sm-1" >
+        <a id="reset" class="btn btn-lg btn-primary" data-toggle="tooltip" data-placement="auto" title="Reset Match" ><i class="fa-solid fa-rotate-left"></i></a>            
+      </div>
+    </div>
+
+    <div class="row" >
+      <div id="w1name" class="col-sm-6 text-center home name" data-wrestler-id="1" >Home Wrestler</div>
+      <div id="w2name" class="col-sm-6 text-center away name" data-wrestler-id="2" >Away Wrestler</div>
+    </div>
+    <div class="row" >
+      <div id="w1score" class="col-sm-6 text-center home" >
+        <span id="w1score-span" class="match-score" data-wrestler-id="1" >0</span>
+      </div>
+      <div id="w2score" class="col-sm-6 text-center away" >
+        <span id="w2score-span" class="match-score" data-wrestler-id="2" >0</span>
+      </div>
+    </div>
+    <div class="row" >
+      <div id="w1decisions" class="col-sm-6 text-center home" >
+        <span id="w1decisions-span" data-wrestler-id="1" >---</span>
+      </div>
+      <div id="w2decisions" class="col-sm-6 text-center away" >
+        <span id="w2decisions-span" data-wrestler-id="2" >---</span>
+      </div>
+    </div>
+    <div class="row spacer" >
+      <div class="col-sm-1" ></div>
+
+      <div class="col-sm-1 text-center" >
+        <a class="takedown btn btn-lg btn-primary" data-wrestler-id="1" data-score="3" data-toggle="tooltip" data-placement="auto" title="Takedown" >T</a>
+      </div>
+      <div class="col-sm-1 text-center" >
+        <a class="escape btn btn-lg btn-primary" data-wrestler-id="1" data-score="1" data-toggle="tooltip" data-placement="auto" title="Escape" >E</a>
+      </div>
+      <div class="col-sm-1 text-center" >
+        <a class="reverse btn btn-lg btn-primary" data-wrestler-id="1" data-score="2" data-toggle="tooltip" data-placement="auto" title="Reversal" >R</a>
+      </div>
+      <div class="col-sm-1 text-center" >
+        <a class="undo-score btn btn-lg btn-warning" data-wrestler-id="1" data-score="undo" data-toggle="tooltip" data-placement="auto" title="Undo" ><i class="fa-solid fa-rotate-left"></i></a>
+      </div>
+
+      <div class="col-sm-2" ></div>
+
+      <div class="col-sm-1 text-center" >
+        <a class="takedown btn btn-lg btn-primary" data-wrestler-id="2" data-score="3" data-toggle="tooltip" data-placement="auto" title="Takedown" >T</a>
+      </div>
+      <div class="col-sm-1 text-center" >
+        <a class="escape btn btn-lg btn-primary" data-wrestler-id="2" data-score="1" data-toggle="tooltip" data-placement="auto" title="Escape" >E</a>
+      </div>
+      <div class="col-sm-1 text-center" >
+        <a class="reverse btn btn-lg btn-primary" data-wrestler-id="2" data-score="2" data-toggle="tooltip" data-placement="auto" title="Reversal" >R</a>
+      </div>
+      <div class="col-sm-1 text-center" >
+        <a class="undo-score btn btn-lg btn-warning" data-wrestler-id="2" data-score="undo" data-toggle="tooltip" data-placement="auto" title="Undo" ><i class="fa-solid fa-rotate-left"></i></a>
+      </div>
+    </div>
+    <div class="row" >
+      <div class="col-sm-1" ></div>
+
+      <div class="col-sm-1 text-center" >
+        <a class="nearfall btn btn-lg btn-primary" data-wrestler-id="1" data-score="2" data-toggle="tooltip" data-placement="auto" title="Nearfall 2" >N2</a>
+      </div>
+      <div class="col-sm-1 text-center" >
+        <a class="nearfall btn btn-lg btn-primary" data-wrestler-id="1" data-score="3" data-toggle="tooltip" data-placement="auto" title="Nearfall 3" >N3</a>
+      </div>
+      <div class="col-sm-1 text-center" >
+        <a class="nearfall btn btn-lg btn-primary" data-wrestler-id="1" data-score="4" data-toggle="tooltip" data-placement="auto" title="Nearfall 4" >N4</a>
+      </div>
+      <div class="col-sm-1 text-center" >
+        <a class="nearfall btn btn-lg btn-primary" data-wrestler-id="1" data-score="5" data-toggle="tooltip" data-placement="auto" title="Nearfall 5" >N5</a>
+      </div>
+
+      <div class="col-sm-2" ></div>
+
+      <div class="col-sm-1 text-center" >
+        <a class="nearfall btn btn-lg btn-primary" data-wrestler-id="2" data-score="2" data-toggle="tooltip" data-placement="auto" title="Nearfall 2" >N2</a>
+      </div>
+      <div class="col-sm-1 text-center" >
+        <a class="nearfall btn btn-lg btn-primary" data-wrestler-id="2" data-score="3" data-toggle="tooltip" data-placement="auto" title="Nearfall 3" >N3</a>
+      </div>
+      <div class="col-sm-1 text-center" >
+        <a class="nearfall btn btn-lg btn-primary" data-wrestler-id="2" data-score="4" data-toggle="tooltip" data-placement="auto" title="Nearfall 4" >N4</a>
+      </div>
+      <div class="col-sm-1 text-center" >
+        <a class="nearfall btn btn-lg btn-primary" data-wrestler-id="2" data-score="5" data-toggle="tooltip" data-placement="auto" title="Nearfall 5" >N5</a>
+      </div>
+    </div>
+    <div class="row" >
+      <div class="col-sm-1" ></div>
+
+      <div class="col-sm-1 text-center" >
+        <a class="penalty btn btn-lg btn-danger" data-wrestler-id="1" data-score="[ 1, 1, 2, -1 ]" data-toggle="tooltip" data-placement="auto" title="Penalty" >P</a>
+      </div>
+      <div class="col-sm-1 text-center" >
+        <a class="stalling btn btn-lg btn-danger" data-wrestler-id="1" data-score="[ 0, 1, 1, 2, -1 ]" data-toggle="tooltip" data-placement="auto" title="Stalling" >S</a>
+      </div>
+      <div class="col-sm-2 text-center" >
+        <a class="false-start btn btn-lg btn-danger" data-wrestler-id="1" data-score="[ 0, 0, 1 ]" data-toggle="tooltip" data-placement="auto" title="False Start" >False Start</a>
+      </div>
+
+      <div class="col-sm-2" ></div>
+
+      <div class="col-sm-1 text-center" >
+        <a class="penalty btn btn-lg btn-danger" data-wrestler-id="2" data-score="[ 1, 1, 2, -1 ]" data-toggle="tooltip" data-placement="auto" title="Penalty" >P</a>
+      </div>
+      <div class="col-sm-1 text-center" >
+        <a class="stalling btn btn-lg btn-danger" data-wrestler-id="2" data-score="[ 0, 1, 1, 2, -1 ]" data-toggle="tooltip" data-placement="auto" title="Stalling" >S</a>
+      </div>
+      <div class="col-sm-2 text-center" >
+        <a class="false-start btn btn-lg btn-danger" data-wrestler-id="2" data-score="[ 0, 0, 1 ]" data-toggle="tooltip" data-placement="auto" title="False Start" >False Start</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script>
+  function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.ceil(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  const Wrestler = class {
+    constructor(idPrefix, name) {
+      this.idPrefix = idPrefix
+      this.name = name;
+      this.score = [ ];
+      this.desicions = [ ];
+      this.penalty = 0;
+      this.stalling = 0;
+      this.falseStart = 0;
+    }
+
+    get totalScore() {
+      return this.score.reduce((sum, val) => sum + val, 0);
+    }
+
+    undoLastScore() {
+      this.score.pop();
+      const decision = this.desicions.pop();
+      if (decision.startsWith('P')) {
+        this.penalty -= 1;
+      } else if (decision.startsWith('S')) {
+        this.stalling -= 1;
+      } else if (decision.startsWith('FS')) {
+        this.falseStart -= 1;
+      }
+    }
+
+    display() {
+      $(`#${this.idPrefix}score-span`).text(this.totalScore);
+
+      const decisions = this.desicions.length == 0 ? '---' : this.desicions;
+      $(`#${this.idPrefix}decisions-span`).text(decisions);
+    }
+
+    reset() {
+      this.score = [ ];
+      this.desicions = [ ];
+      this.penalty = 0;
+      this.stalling = 0;
+      this.falseStart = 0;
+    }
+
+    select() {
+      $(`#${this.idPrefix}name`).addClass('choice');
+      $(`#${this.idPrefix}score`).addClass('choice');
+      $(`#${this.idPrefix}decisions`).addClass('choice');
+    }
+
+    deselect() {
+      $(`#${this.idPrefix}name`).removeClass('choice');
+      $(`#${this.idPrefix}score`).removeClass('choice');
+      $(`#${this.idPrefix}decisions`).removeClass('choice');
+    }
+
+  }
+
+  var wrestlers = { 1: new Wrestler('w1', 'Home Wrestler'), 2: new Wrestler('w2', 'Away Wrestler') };
+  var period = 1;
+  var choice = null;
+
+  $('.name').click(function() {
+    const wrestlerId = $(this).data('wrestler-id');
+
+    var newName = prompt('Player Name', wrestlers[wrestlerId].name);
+    if (newName !== null) {
+      wrestlers[wrestlerId].name = newName;
+      $(this).text(newName);
+    }
+  });
+
+  function addToScore(wrestlerId, score, decision) {
+    wrestlers[wrestlerId].score.push(score);
+    wrestlers[wrestlerId].desicions.push(decision);
+    wrestlers[wrestlerId].display();
+  }
+
+  $('.takedown').click(function() {
+    const wrestlerId = $(this).data('wrestler-id');
+    const score = $(this).data('score');
+    addToScore(wrestlerId, score, `T${score}`);
+  });
+  $('.escape').click(function() {
+    const wrestlerId = $(this).data('wrestler-id');
+    const score = $(this).data('score');
+    addToScore(wrestlerId, score, `E${score}`);
+  });
+  $('.reverse').click(function() {
+    const wrestlerId = $(this).data('wrestler-id');
+    const score = $(this).data('score');
+    addToScore(wrestlerId, score, `R${score}`);
+  });
+  $('.nearfall').click(function() {
+    const wrestlerId = $(this).data('wrestler-id');
+    const score = $(this).data('score');
+    addToScore(wrestlerId, score, `N${score}`);
+  });
+
+  $('.undo-score').click(function() {
+    const wrestlerId = $(this).data('wrestler-id');
+    
+    wrestlers[wrestlerId].undoLastScore();
+    wrestlers[wrestlerId].display();
+  })
+
+  $('.penalty').click(function() {
+    const wrestlerId = $(this).data('wrestler-id');
+    const scoreList = $(this).data('score');
+
+    const index = Math.min(wrestlers[wrestlerId].penalty, scoreList.length - 1);
+    const score = scoreList[index];
+    wrestlers[wrestlerId].penalty += 1
+
+    if (score == -1) {
+      alert(`${wrestlers[wrestlerId].name} is disqualified for technical violations`);
+    }
+
+    addToScore(wrestlerId, score, `P${score}`);
+  });
+  $('.stalling').click(function() {
+    const wrestlerId = $(this).data('wrestler-id');
+    const scoreList = $(this).data('score');
+
+    const index = Math.min(wrestlers[wrestlerId].stalling, scoreList.length - 1);
+    const score = scoreList[index];
+    wrestlers[wrestlerId].stalling += 1
+    
+    if (score == -1) {
+      alert(`${wrestlers[wrestlerId].name} is disqualified for stalling`);
+    }
+
+    addToScore(wrestlerId, score, `S${score}`);
+  });
+  $('.false-start').click(function() {
+    const wrestlerId = $(this).data('wrestler-id');
+    const scoreList = $(this).data('score');
+
+    const index = Math.min(wrestlers[wrestlerId].falseStart, scoreList.length - 1);
+    const score = scoreList[index];
+    wrestlers[wrestlerId].falseStart += 1
+    
+    addToScore(wrestlerId, score, `FS${score}`);
+  });
+
+  $('#reset').click(function() {
+    period = 1;
+
+    $('#period').text(period);
+
+    for (const wrestlerId in wrestlers) {
+      wrestlers[wrestlerId].deselect();
+      wrestlers[wrestlerId].reset();
+      wrestlers[wrestlerId].display();
+    }
+  });
+
+  $('#next-period').click(function() {
+    if (period == 7) {
+      alert('The match is ended');
+      return;
+    }
+
+    period += 1
+    const periodText = `${period > 3 ? 'OT ' : ''}${period}`
+    $('#period').text(periodText);
+    
+    for (const wrestlerId in wrestlers) {
+      wrestlers[wrestlerId].deselect();
+    }
+
+    // TODO: Complete this logic, this does not take into account the first wrestler can defer choice
+    // TODO: Complete this logic, it works until the ultimate ride out
+    if (period == 2) {
+      // Flip a coin or match odd / evens
+      choice = getRandomInt(0, 1) == 0;
+    } else if (period == 3) {
+      // The other wretler gets choice
+      choice = !choice;
+    } else if (period == 4) {
+      // Both wrestlers back to neutral for sudden death period (no choice)
+      choice = null;
+    } else if (period == 5) {
+      // first 30 second ride out
+      // Flip a coin
+      choice = getRandomInt(0, 1) == 0;
+    } else if (period == 6) {
+      // second 30 second ride out
+      // Positions are switched advantage / disadvantage (no choice)
+      choice = null;
+    } else if (period == 7) {
+      // 30 second ultimate ride out
+      // choice = wrestler who scored first in regulation, opponent of unsportsmanlike conduct penalty recipient, or random if no points scored in regulation
+    }
+    
+    if (choice !== undefined && choice !== null) {
+      if (choice) {
+        wrestlers[1].select();
+      } else {
+        wrestlers[2].select();
+      }
+
+      // alert(choice ? wrestlers[1].name : wrestlers[2].name);
+    }
+  });
+
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  });
+  </script>
+</body>
+</html>
+
