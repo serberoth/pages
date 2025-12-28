@@ -363,7 +363,7 @@
     // TODO: Complete this logic, it works until the ultimate ride out
     if (period == 2) {
       // Flip a coin or match odd / evens
-      choice = getRandomInt(0, 1) == 0;
+      choice = getRandomInt(0, 2) == 0;
     } else if (period == 3) {
       // The other wretler gets choice
       choice = !choice;
@@ -373,7 +373,7 @@
     } else if (period == 5) {
       // first 30 second ride out
       // Flip a coin
-      choice = getRandomInt(0, 1) == 0;
+      choice = getRandomInt(0, 2) == 0;
     } else if (period == 6) {
       // second 30 second ride out
       // Positions are switched advantage / disadvantage (no choice)
